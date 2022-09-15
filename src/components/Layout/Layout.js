@@ -8,6 +8,11 @@ import {
 import classnames from "classnames";
 import {Box, IconButton, Link} from '@material-ui/core'
 import Icon from '@mdi/react'
+import Vendor from "../../pages/vendor";
+import VendorRegistration from "../../pages/vendor/VendorRegistration";
+import Locality from "../../pages/dashboard/Locality/Locality";
+import Categories from "../../pages/dashboard/components/Categories/Categories";
+import Menu from "../../pages/dashboard/components/Menu/Menu"
 
 //icons
 import {
@@ -29,11 +34,14 @@ import Typography from "../../pages/typography";
 import Notifications from "../../pages/notifications";
 import Maps from "../../pages/maps";
 import Tables from "../../pages/tables";
+
 import Icons from "../../pages/icons";
 import Charts from "../../pages/charts";
 
 // context
 import { useLayoutState } from "../../context/LayoutContext";
+import { Category } from "@material-ui/icons";
+
 
 function Layout(props) {
   var classes = useStyles();
@@ -57,6 +65,11 @@ function Layout(props) {
               <Route path="/app/typography" component={Typography} />
               <Route path="/app/tables" component={Tables} />
               <Route path="/app/notifications" component={Notifications} />
+              <Route path="/app/vendor" component={Vendor} />
+              <Route path="/app/vendorregistration" component={VendorRegistration} />
+              <Route path="/app/locality" component={Locality} />
+              <Route path="/app/categories" component={Categories} />
+              <Route path="/app/menu" component={Menu} />
               <Route
                 exact
                 path="/app/ui"
@@ -73,7 +86,7 @@ function Layout(props) {
               alignItems={"center"}
               justifyContent="space-between"
             >
-              <div>
+              {/* <div>
                 <Link
                   color={'primary'}
                   href={'https://flatlogic.com/'}
@@ -98,7 +111,7 @@ function Layout(props) {
                 >
                   Blog
                 </Link>
-              </div>
+              </div> */}
               <div>
                 <Link
                   href={'https://www.facebook.com/flatlogic'}

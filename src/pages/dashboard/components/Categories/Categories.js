@@ -1,18 +1,18 @@
 import React from "react";
-import { Grid,Button, Typography,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle ,TextField,FormControl,InputLabel,Select,MenuItem} from "@material-ui/core";
-import { useForm, Controller } from 'react-hook-form';
+import { Grid,Button,Typography,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle ,TextField,FormControl,InputLabel,Select,MenuItem} from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import MUIDataTable from "mui-datatables";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
+import { useForm, Controller } from 'react-hook-form';
 // components
-import PageTitle from "../../components/PageTitle";
-import Widget from "../../components/Widget";
-import Table from "../dashboard/components/Table/Table";
+import PageTitle from "../../../../components/PageTitle"
+import Widget from "../../../../components/Widget/Widget";
+import Table from "../../components/Table/Table";
 import EditIcon from '@material-ui/icons/Edit';
 // data
-import mock from "../dashboard/mock";
+import mock from "../../../dashboard/mock";
 
 const datatableData = [
   ["Joe James", "Example Inc.", "Yonkers", "NY"],
@@ -34,106 +34,104 @@ const datatableData = [
   ["Gaston Festus", "Example Inc.", "Tampa", "FL"],
 ];
 
+const useStyles = makeStyles(theme => ({
+  tableOverflow: {
+    overflow: 'auto'
+  }
+}))
 
 export default function Tables() {
-  const [age, setAge] = React.useState('');
-
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
-  
-  
-  const validationSchema = Yup.object().shape({
-    cityName: Yup.string().required('City Name is required'),
-    
-   
-  });
-  const {
-    register,
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(validationSchema),
-  });
-  const onSubmit = data => {
-    debugger
-    console.log(JSON.stringify(data, null, 2));
-  };
-
-
+    const [age, setAge] = React.useState('');
+    const handleChange = (event) => {
+      setAge(event.target.value);
+    };
+    const validationSchema = Yup.object().shape({
+        categoryName: Yup.string().required('Category Name is required'),
+     
+    });
+    const {
+      register,
+      control,
+      handleSubmit,
+      formState: { errors },
+    } = useForm({
+      resolver: yupResolver(validationSchema),
+    });
+    const onSubmit = data => {
+      
+      console.log(JSON.stringify(data, null, 2));
+    };
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
-
+  const onclick = () => {
+   
+    setOpen(true);
+    }
+  
+  
   const handleClose = () => {
     setOpen(false);
   };
-  const onclick = () => {
-  //  setData(childdata);
-  setOpen(true);
-  }
- 
-  
+
+  const classes = useStyles();
   return (
     <>
-       <PageTitle title="City" button={<Button
-      variant="outlined" onClick={handleClickOpen}
+       <PageTitle title="Categories" button={<Button
+      variant="outlined" onClick={handleClose}
       size="medium"
       color="secondary"
     
     >
-        Add City
+        Add Food Categories
     </Button>} />
   
       <Grid container spacing={4}>
 
+        {/* <Grid item xs={12}>
+          <MUIDataTable
+            title="Employee List"
+            data={datatableData}
+            columns={["Name", "Company", "City", "State"]}
+            options={{
+              filterType: "checkbox",
+            }}
+          />
+        </Grid> */}
 
         
         <Grid item xs={12}>
-          <Widget title="" upperTitle noBodyPadding >
-            <Table data={mock.table} onclick={onclick} />
+          <Widget title="" upperTitle noBodyPadding bodyClass={classes.tableOverflow}>
+            <Table data={mock.table} onclick={onclick}/>
           </Widget>
         </Grid>
       </Grid>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle  >Add City</DialogTitle>
+        <DialogTitle>Add Categories</DialogTitle>
         <DialogContent>
           {/* <DialogContentText>
             To subscribe to this website, please enter your email address here. We
             will send updates occasionally.
           </DialogContentText> */}
-
-
-
-        
-        
-
-          
-        <TextField 
+          <TextField
             autoFocus
             margin="dense"
             id="name"
-            label="City Name"
-            type="city name"
+            label="Category Name"
+            type="Category Name"
             
             variant="standard"
-            {...register('cityName')}
-            error={errors.cityName ? true : false}
+            {...register('categoryName')}
+          error={errors.categoryName ? true : false}
           />
            <div>
-          <Typography variant="inherit" color="textSecondary">
-                {errors.cityName?.message}
+    <Typography variant="inherit" color="textSecondary">
+                {errors.categoryName?.message}
               </Typography>
               </div>
-
-
-
-
-
-<FormControl variant="standard" fullWidth>
+          <FormControl  variant="standard" fullWidth>
         <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
         <Select
           labelId="demo-simple-select-standard-label"
@@ -149,23 +147,11 @@ export default function Tables() {
         
         </Select>
         </FormControl>
-
-
-
-
-
-
-
-
-
-
-
-      
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={handleClose} >Cancel</Button>
-          <Button onClick={handleSubmit(onSubmit)} >Add</Button>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSubmit(onSubmit)}>Add</Button>
         </DialogActions>
       </Dialog>
     </>

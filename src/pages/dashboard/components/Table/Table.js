@@ -9,14 +9,17 @@ import {
 } from "@material-ui/core";
 import useStyles from "../../styles";
 
+import EditIcon from '@material-ui/icons/Edit';
+
 const states = {
   sent: "success",
   pending: "warning",
   declined: "secondary",
 };
 
-export default function TableComponent({ data }) {
+export default function TableComponent({ data,onclick }) {
   const classes = useStyles();
+  
   var keys = Object.keys(data[0]).map(i => i.toUpperCase());
   keys.shift(); // delete "id" key
 
@@ -30,17 +33,17 @@ export default function TableComponent({ data }) {
         </TableRow>
       </TableHead>
       <TableBody>
-        {data.map(({ id, name, email, product, price, date, city, status }) => (
+        {data.map(({ id, name,   status }) => (
           <TableRow key={id}>
             <TableCell className="pl-3 fw-normal">{name}</TableCell>
-            <TableCell>{email}</TableCell>
-            <TableCell>{product}</TableCell>
-            <TableCell>{price}</TableCell>
-            <TableCell>{date}</TableCell>
-            <TableCell>{city}</TableCell>
+        
             <TableCell>
               <Chip label={status} classes={{root: classes[states[status.toLowerCase()]]}}/>
             </TableCell>
+            <TableCell>
+              <EditIcon onClick={() => onclick()}/>
+            </TableCell>
+            
           </TableRow>
         ))}
       </TableBody>

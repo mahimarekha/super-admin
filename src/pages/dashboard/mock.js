@@ -131,54 +131,161 @@ const mock = {
     {
       id: 0,
       name: "Mark Otto",
-      email: "ottoto@wxample.com",
-      product: "ON the Road",
-      price: "$25 224.2",
-      date: "11 May 2017",
-      city: "Otsego",
-      status: "Sent"
+      
+      status: "Active",
+      edit:"",
     },
     {
       id: 1,
       name: "Jacob Thornton",
-      email: "thornton@wxample.com",
-      product: "HP Core i7",
-      price: "$1 254.2",
-      date: "4 Jun 2017",
-      city: "Fivepointville",
-      status: "Sent"
+      
+      status: "Active",
+      edit:""
     },
     {
       id: 2,
       name: "Larry the Bird",
-      email: "bird@wxample.com",
-      product: "Air Pro",
-      price: "$1 570.0",
-      date: "27 Aug 2017",
-      city: "Leadville North",
-      status: "Pending"
+      status: "Active",
+      edit:""
     },
     {
       id: 3,
       name: "Joseph May",
-      email: "josephmay@wxample.com",
-      product: "Version Control",
-      price: "$5 224.5",
-      date: "19 Feb 2018",
-      city: "Seaforth",
-      status: "Declined"
+      
+      status: "Active",
+      edit:""
     },
     {
       id: 4,
       name: "Peter Horadnia",
-      email: "horadnia@wxample.com",
-      product: "Let's Dance",
-      price: "$43 594.7",
-      date: "1 Mar 2018",
-      city: "Hanoverton",
-      status: "Sent"
+      
+      status: "Active",
+      edit:""
     }
-  ]
+  ],
+  vendor: [
+    {
+      id: 0,
+      name: "Marffffk Otto", 
+      contactno:"999999999",
+      emailaddress:"aba@gmaail.com",
+      city:"dallos",
+      status: "Active",
+      edit:""
+    
+    },
+    {
+      id: 1,
+      name: "Jacob Thornton",
+      contactno:"999999999",
+      emailaddress:"aba@gmaail.com",
+      city:"dallos",
+      status: "Active",
+      edit:""
+    },
+    {
+      id: 2,
+      name: "Larry the Bird",
+      contactno:"999999999",
+      emailaddress:"aba@gmaail.com",
+      city:"dallos",
+      status: "Pending",
+      edit:""
+    },
+    {
+      id: 3,
+      name: "Joseph May",
+      contactno:"999999999",
+      emailaddress:"aba@gmaail.com",
+      city:"dallos",
+      status: "Declined",
+      edit:""
+    },
+    {
+      id: 4,
+      name: "Peter Horadnia",
+      contactno:"999999999",
+      emailaddress:"aba@gmaail.com",
+      city:"dallos",
+      status: "Active",
+      edit:""
+    }
+  ],
+  locality: [
+    {
+      id: 0,
+      area: "t nagar", 
+      city:"chenai",
+      status: "Active",
+      edit:""
+    },
+    {
+      id: 1,
+      area: "t nagar", 
+      city:"chenai",
+      status: "Active",
+      edit:""
+    },
+    {
+      id: 2,
+      area: "t nagar", 
+      city:"chenai",
+      status: "Active",
+      edit:""
+    },
+    {
+      id: 3,
+      area: "t nagar", 
+      city:"chenai",
+      status: "Active",
+      edit:""
+    },
+    {
+      id: 4,
+      area: "t nagar", 
+      city:"chenai",
+      status: "Sent",
+      edit:""
+    }
+  ],
+  categories: [
+    {
+      id: 0,
+      name: "Mark Otto",
+      
+      status: "Sent",
+      edit:""
+    },
+    {
+      id: 1,
+      name: "Jacob Thornton",
+      
+      status: "Sent",
+      edit:""
+    },
+    {
+      id: 2,
+      name: "Larry the Bird",
+      
+      status: "Pending",
+      edit:""
+    },
+    {
+      id: 3,
+      name: "Joseph May",
+      
+      status: "Declined",
+      edit:""
+    },
+    {
+      id: 4,
+      name: "Peter Horadnia",
+      
+      status: "Sent",
+      edit:""
+
+    }
+  ],
 };
 
 export default mock;

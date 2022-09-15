@@ -1,18 +1,18 @@
 import React from "react";
-import { Grid,Button, Typography,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle ,TextField,FormControl,InputLabel,Select,MenuItem} from "@material-ui/core";
 import { useForm, Controller } from 'react-hook-form';
+import { Grid,Button,Dialog,Typography,DialogActions,DialogContent,DialogContentText,DialogTitle ,TextField,FormControl,InputLabel,Select,MenuItem} from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import MUIDataTable from "mui-datatables";
-import InputAdornment from "@material-ui/core/InputAdornment";
+
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 // components
-import PageTitle from "../../components/PageTitle";
-import Widget from "../../components/Widget";
-import Table from "../dashboard/components/Table/Table";
-import EditIcon from '@material-ui/icons/Edit';
+import PageTitle from "../../../../components/PageTitle"
+import Widget from "../../../../components/Widget/Widget";
+import Table from "../../components/Table/Table";
+
 // data
-import mock from "../dashboard/mock";
+import mock from "../../../dashboard/mock";
 
 const datatableData = [
   ["Joe James", "Example Inc.", "Yonkers", "NY"],
@@ -34,9 +34,14 @@ const datatableData = [
   ["Gaston Festus", "Example Inc.", "Tampa", "FL"],
 ];
 
+const useStyles = makeStyles(theme => ({
+  tableOverflow: {
+    overflow: 'auto'
+  }
+}))
 
-export default function Tables() {
-  const [age, setAge] = React.useState('');
+export default function Menu() {
+    const [age, setAge] = React.useState('');
 
   const handleChange = (event) => {
     setAge(event.target.value);
@@ -44,8 +49,8 @@ export default function Tables() {
   
   
   const validationSchema = Yup.object().shape({
-    cityName: Yup.string().required('City Name is required'),
-    
+    MenuName: Yup.string().required('Menu Name is required'),
+    categoryName: Yup.string().required('category Name is required')
    
   });
   const {
@@ -60,8 +65,6 @@ export default function Tables() {
     debugger
     console.log(JSON.stringify(data, null, 2));
   };
-
-
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -71,69 +74,98 @@ export default function Tables() {
   const handleClose = () => {
     setOpen(false);
   };
-  const onclick = () => {
-  //  setData(childdata);
-  setOpen(true);
-  }
- 
-  
+
+  const classes = useStyles();
   return (
     <>
-       <PageTitle title="City" button={<Button
+       <PageTitle title="Menu" button={<Button
       variant="outlined" onClick={handleClickOpen}
       size="medium"
       color="secondary"
     
     >
-        Add City
+        Add Food Menu
     </Button>} />
   
       <Grid container spacing={4}>
 
+        {/* <Grid item xs={12}>
+          <MUIDataTable
+            title="Employee List"
+            data={datatableData}
+            columns={["Name", "Company", "City", "State"]}
+            options={{
+              filterType: "checkbox",
+            }}
+          />
+        </Grid> */}
 
         
         <Grid item xs={12}>
-          <Widget title="" upperTitle noBodyPadding >
-            <Table data={mock.table} onclick={onclick} />
+          <Widget title="" upperTitle noBodyPadding bodyClass={classes.tableOverflow}>
+            <Table data={mock.table} onclick={handleClickOpen}/>
           </Widget>
         </Grid>
       </Grid>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle  >Add City</DialogTitle>
+        <DialogTitle>Add Menu</DialogTitle>
         <DialogContent>
           {/* <DialogContentText>
             To subscribe to this website, please enter your email address here. We
             will send updates occasionally.
           </DialogContentText> */}
-
-
-
-        
-        
-
-          
-        <TextField 
+          <TextField
             autoFocus
             margin="dense"
             id="name"
-            label="City Name"
-            type="city name"
+            label="Menu Name"
+            type="Menu Name"
             
             variant="standard"
-            {...register('cityName')}
-            error={errors.cityName ? true : false}
+            {...register('MenuName')}
+            error={errors.MenuName ? true : false}
           />
-           <div>
+<div>
           <Typography variant="inherit" color="textSecondary">
-                {errors.cityName?.message}
+                {errors.MenuName?.message}
               </Typography>
               </div>
+<FormControl variant="standard" fullWidth >
+        <InputLabel id="demo-simple-select-standard-label">Category Name</InputLabel>
+        <Select
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+        
+          label="Status"
+          {...register('categoryName')}
+          error={errors.categoryName ? true : false}
+          
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
 
 
-
-
-
-<FormControl variant="standard" fullWidth>
+          <MenuItem value={1}>Category Name 1</MenuItem>
+          <MenuItem value={2}>In Category Name 2</MenuItem>
+          <MenuItem value={2}>In Category Name 3</MenuItem>
+        </Select>
+        </FormControl>
+        <div>
+          <Typography variant="inherit" color="textSecondary">
+                {errors.categoryName?.message}
+              </Typography>
+              </div>
+          {/* <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Category Name"
+            type="Category Name"
+            fullWidth
+            variant="standard"
+          /> */}
+          <FormControl variant="standard" fullWidth >
         <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
         <Select
           labelId="demo-simple-select-standard-label"
@@ -149,23 +181,11 @@ export default function Tables() {
         
         </Select>
         </FormControl>
-
-
-
-
-
-
-
-
-
-
-
-      
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={handleClose} >Cancel</Button>
-          <Button onClick={handleSubmit(onSubmit)} >Add</Button>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSubmit(onSubmit)}>Add</Button>
         </DialogActions>
       </Dialog>
     </>
