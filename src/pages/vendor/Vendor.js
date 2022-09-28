@@ -10,7 +10,8 @@ import {
   useParams,
   useRouteMatch
 } from "react-router-dom";
-
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import {
   Table,
   TableRow,
@@ -19,7 +20,7 @@ import {
   TableCell,
   Chip
 } from "@material-ui/core";
-import EditIcon from '@material-ui/icons/Edit';
+import { useContext, useEffect, useState } from 'react';
 // components
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
@@ -27,7 +28,9 @@ import Widget from "../../components/Widget";
 
 // data
 import mock from "../dashboard/mock";
-
+import CityServices from "../../services/CityServices";
+import LocalityServices from "../../services/LocalityServices";
+import VendorRegistrationServices from "../../services/VendorRegistrationServices";
 const datatableData = [
   ["Joe James", "Example Inc.", "Yonkers", "NY"],
   ["John Walsh", "Example Inc.", "Hartford", "CT"],
@@ -54,25 +57,61 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function Vendor() {
-  const [age, setAge] = React.useState('');
-  let { path, url } = useRouteMatch();
-  
-  const handleChange = (event ) => {
-    setAge(event.target.value);
-  };
+export default function Vendor(props) {
+  const tableHeaders = ['Organization Name ','Full Name', 'Mobile Number', 'City Name','Status', 'Edit','Delete'];
 
   const [open, setOpen] = React.useState(false);
+  const [error, setError] = useState('');
+  const [vendorRegistrationList, setVendorRegistrationList] = useState([]);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  useEffect(() => {
+    getVendorRegistrationList();    
+    return () => {
+      setVendorRegistrationList([])
+    };
+  }, []);
+
+  // const deleteVendorRegistration = (vendorRegistration) => {
+  //   if (vendorRegistration) {
+  //     LocalityServices.deleteVendorRegistration(vendorRegistration).then((res) => {
+  //       getVendorRegistrationList();
+  //     }).catch((err) => {
+
+  //     });
+  //   }
+
+  // };
+  
 
   const handleClose = () => {
     setOpen(false);
   };
   const onclick  = () => {
   
+  };
+  const editVendor=(id)=>{
+    props.history.push(`/app/vendorregistration/${id}`);
+  }
+
+  const getVendorRegistrationList=()=>{
+    VendorRegistrationServices.getAllVendorRegistration().then((res) => {
+
+      setVendorRegistrationList(res);
+
+    }).catch((err) => {
+     // setError(err.message);
+    });
+  }
+ 
+  const deleteVendorRister = (vendordelete) => {
+    if (vendordelete) {
+        VendorRegistrationServices.deleteVendorRegistration(vendordelete).then((res) => {
+          getVendorRegistrationList();
+      }).catch((err) => {
+
+      });
+    }
+
   };
   const classes = useStyles();
   var keys = Object.keys(mock.vendor[0]).map(i => i.toUpperCase());
@@ -84,7 +123,7 @@ export default function Vendor() {
        
     
     
-     <PageTitle title="Vendor registration" button={<Link to="/app/vendorregistration" 
+     <PageTitle title="Vendor registration" button={<Link to="/app/vendorregistration/create" 
       variant="outlined" 
       size="medium"
       color="secondary"
@@ -115,34 +154,36 @@ export default function Vendor() {
            
             <Table className="mb-0">
       <TableHead>
-        <TableRow>
-          {keys.map(key => (
-            <TableCell key={key}>{key}</TableCell>
-          ))}
-        </TableRow>
+      <TableRow>
+                  {tableHeaders.map(key => (
+                    <TableCell key={key}>{key}</TableCell>
+                  ))}
+                </TableRow>
       </TableHead>
       <TableBody>
-        {mock.vendor.map((result) => (
-          <TableRow key={result.id}>
-            <TableCell className="pl-3 fw-normal">{result.name}</TableCell>
-            <TableCell className="pl-3 fw-normal">{result.contactno}</TableCell>
-            <TableCell className="pl-3 fw-normal">{result.emailaddress}</TableCell>
-            <TableCell className="pl-3 fw-normal">{result.city}</TableCell>
-            <TableCell className="pl-3 fw-normal">{result.status}</TableCell>
-            <TableCell className="pl-3 fw-normal">
-            <Link to="/app/vendorregistration" 
-      variant="outlined" 
-      size="medium"
-      color="secondary"
-    
-    >
-        <EditIcon/>
-    </Link>
-            </TableCell>
-           
-          </TableRow>
-        ))}
-      </TableBody>
+
+
+{vendorRegistrationList.map((vendorRegistration) => (
+  <TableRow key={vendorRegistration._id}>
+    <TableCell className="pl-3 fw-normal" >{vendorRegistration.orgName}</TableCell>
+    <TableCell className="pl-3 fw-normal" >{vendorRegistration.fullName}</TableCell>
+    <TableCell className="pl-3 fw-normal" >{vendorRegistration.mobileNumber}</TableCell>   
+    <TableCell className="pl-3 fw-normal" >{vendorRegistration.cityId.cityName}</TableCell>
+    <TableCell>
+
+      {vendorRegistration.status ? 'Active' : 'In Active'}
+    </TableCell>
+    <TableCell>
+      <EditIcon   onClick={() => editVendor(vendorRegistration._id)} >
+      
+      </EditIcon >
+    </TableCell>
+    <TableCell>
+      <DeleteIcon onClick={() => deleteVendorRister(vendorRegistration)} />
+    </TableCell>
+  </TableRow>
+))}
+</TableBody>
     </Table>
           </Widget>
         </Grid>

@@ -66,7 +66,7 @@ function Layout(props) {
               <Route path="/app/tables" component={Tables} />
               <Route path="/app/notifications" component={Notifications} />
               <Route path="/app/vendor" component={Vendor} />
-              <Route path="/app/vendorregistration" component={VendorRegistration} />
+              <Route path="/app/vendorregistration/:id" component={VendorRegistration} />
               <Route path="/app/locality" component={Locality} />
               <Route path="/app/categories" component={Categories} />
               <Route path="/app/menu" component={Menu} />

@@ -1,53 +1,48 @@
 import React from "react";
-import { Grid,Button, Typography,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle ,TextField,FormControl,InputLabel,Select,MenuItem} from "@material-ui/core";
+import {
+  Grid, Button, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem, Table,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell
+} from "@material-ui/core";
 import { useForm, Controller } from 'react-hook-form';
-import { makeStyles } from "@material-ui/styles";
-import MUIDataTable from "mui-datatables";
-import InputAdornment from "@material-ui/core/InputAdornment";
+
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
+import { useContext, useEffect, useState } from 'react';
+
 // components
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
-import Table from "../dashboard/components/Table/Table";
+// import Table from "../dashboard/components/Table/Table";
 import EditIcon from '@material-ui/icons/Edit';
-// data
-import mock from "../dashboard/mock";
 
-const datatableData = [
-  ["Joe James", "Example Inc.", "Yonkers", "NY"],
-  ["John Walsh", "Example Inc.", "Hartford", "CT"],
-  ["Bob Herm", "Example Inc.", "Tampa", "FL"],
-  ["James Houston", "Example Inc.", "Dallas", "TX"],
-  ["Prabhakar Linwood", "Example Inc.", "Hartford", "CT"],
-  ["Kaui Ignace", "Example Inc.", "Yonkers", "NY"],
-  ["Esperanza Susanne", "Example Inc.", "Hartford", "CT"],
-  ["Christian Birgitte", "Example Inc.", "Tampa", "FL"],
-  ["Meral Elias", "Example Inc.", "Hartford", "CT"],
-  ["Deep Pau", "Example Inc.", "Yonkers", "NY"],
-  ["Sebastiana Hani", "Example Inc.", "Dallas", "TX"],
-  ["Marciano Oihana", "Example Inc.", "Yonkers", "NY"],
-  ["Brigid Ankur", "Example Inc.", "Dallas", "TX"],
-  ["Anna Siranush", "Example Inc.", "Yonkers", "NY"],
-  ["Avram Sylva", "Example Inc.", "Hartford", "CT"],
-  ["Serafima Babatunde", "Example Inc.", "Tampa", "FL"],
-  ["Gaston Festus", "Example Inc.", "Tampa", "FL"],
-];
+import CityServices from "../../services/CityServices";
+import DeleteIcon from '@material-ui/icons/Delete';
 
 
 export default function Tables() {
+  const tableHeaders = ['Name', 'Status', 'Edit','Delete'];
   const [age, setAge] = React.useState('');
 
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
-  
-  
+  const [data, setData] = useState({});
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [cityList, setCityList] = useState([]);
+  const [cityForm, setCityForm] = useState({
+    id:'',
+    cityName:'',
+    status: '',
+
+  });
+
   const validationSchema = Yup.object().shape({
     cityName: Yup.string().required('City Name is required'),
-    
-   
+    status: Yup.string().required('status is required'),
+
   });
+  
   const {
     register,
     control,
@@ -56,45 +51,203 @@ export default function Tables() {
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
+  useEffect(() => {
+    getCityList();
+    return () => {
+      setCityList([]);
+
+    };
+  }, []);
+
+  const handleChange = (event) => {
+    setAge(event.target.value);
+  };
+
+
+
+
+  const getCityList = () => {
+    CityServices.getAllCity().then((res) => {
+     
+      setCityList(res);
+
+    }).catch((err) => {
+      setError(err.message);
+    });
+  }
+
+
+
   const onSubmit = data => {
-    debugger
+    const createObjectCity = {
+      cityName: data.cityName,
+      status: data.status,
+      stateId: ""
+    }
+
+    if(cityForm.id){
+      createObjectCity.id = cityForm.id;
+      CityServices.upadeCity(createObjectCity).then((res) => {
+        handleClose();
+        getCityList();
+        formReset();
+      }).catch((err) => {
+          setLoading(false);
+          setError(err.message);
+        });
+    }else{
+      CityServices.creteCity(createObjectCity).then((res) => {
+        handleClose();
+        getCityList();
+        formReset();
+      })
+        .catch((err) => {
+          setLoading(false);
+          setError(err.message);
+        });
+    }
+
+   
+   
     console.log(JSON.stringify(data, null, 2));
   };
-
-
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
+  const deleteCity = (city) => {
+    if(city){
+      CityServices.deleteCity(city).then((res) => {
+        getCityList();
+      }).catch((err) => {
+         
+     });
+    }
+   
+  };
+  const handleClickOpen = (city) => {
+    
+    if(city && city._id){
+      setCityForm({
+        cityName:city.cityName,
+        status: city.status,
+        id:city._id
+      })
+    }else{
+      formReset();
+    }
     setOpen(true);
   };
-
+   
   const handleClose = () => {
     setOpen(false);
   };
-  const onclick = () => {
-  //  setData(childdata);
-  setOpen(true);
-  }
- 
+
+  const cityName = (event) => {
+
+    const citySelectData = {
+      cityName:event.target.value,
+      
+      status: cityForm.status,
+      id:cityForm.id
+    }
+    setCityForm(citySelectData)
   
+  }
+
+
+  const selectStatus = (event) => {
+  
+    const citySelectData = {
+      cityName:cityForm.cityName,
+      status: event.target.value,
+      id:cityForm.id
+    }
+    setCityForm(citySelectData)
+  
+  }
+  const formReset =()=>{
+    const areaSelectData = {
+      cityName:'',
+      status: '',
+      id:''
+    }
+    setCityForm(areaSelectData)
+  }
+  const [open, setOpen] = React.useState(false);
+
+ 
+
+  
+
+ 
+  const onclick = () => {
+    //  setData(childdata);
+    setOpen(true);
+  }
+
+
   return (
     <>
-       <PageTitle title="City" button={<Button
-      variant="outlined" onClick={handleClickOpen}
-      size="medium"
-      color="secondary"
-    
-    >
+      <PageTitle title="City" button={<Button
+        variant="outlined" onClick={handleClickOpen}
+        size="medium"
+        color="secondary"
+
+      >
         Add City
-    </Button>} />
-  
+      </Button>} />
+
       <Grid container spacing={4}>
 
 
-        
+
         <Grid item xs={12}>
           <Widget title="" upperTitle noBodyPadding >
-            <Table data={mock.table} onclick={onclick} />
+
+
+            <Table className="mb-0">
+              <TableHead>
+                <TableRow>
+                  {tableHeaders.map(key => (
+                    <TableCell key={key}>{key}</TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                
+
+
+              {cityList.map((city) => (
+                  <TableRow key={city._id}>
+                    <TableCell className="pl-3 fw-normal" >{city.cityName}</TableCell>
+                    <TableCell>
+
+                      {city.status ? 'Active' : 'In Active'}
+                    </TableCell>
+                    <TableCell>
+                      <EditIcon onClick={() => handleClickOpen(city)} />
+                    </TableCell>
+                    <TableCell>
+                      <DeleteIcon onClick={() => deleteCity(city)} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+
+
+                 {/* {cityList.map(({ id, cityName, status }) => (
+                  <TableRow key={id}>
+                    <TableCell className="pl-3 fw-normal" >{cityName}</TableCell>
+
+                    <TableCell>
+                      {status ? 'Active' : 'In Active'}
+                    </TableCell>
+                    <TableCell>
+                      <EditIcon onClick={() => handleClickOpen(city)} />
+                    </TableCell>
+                    <TableCell>
+                      <DeleteIcon onClick={() => deleteLocality(city)} />
+                    </TableCell>
+                  </TableRow>
+                ))} */}
+              </TableBody>
+            </Table>
           </Widget>
         </Grid>
       </Grid>
@@ -108,47 +261,60 @@ export default function Tables() {
 
 
 
-        
-        
 
-          
-        <TextField 
+
+
+          <TextField
             autoFocus
             margin="dense"
             id="name"
             label="City Name"
             type="city name"
-            
+            value={cityForm.cityName}
             variant="standard"
             {...register('cityName')}
+            onChange={cityName}
             error={errors.cityName ? true : false}
           />
-           <div>
-          <Typography variant="inherit" color="textSecondary">
-                {errors.cityName?.message}
-              </Typography>
-              </div>
+          <div>
+            <Typography variant="inherit" color="textSecondary">
+              {errors.cityName?.message}
+            </Typography>
+          </div>
 
 
 
 
 
-<FormControl variant="standard" fullWidth>
-        <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
-        <Select
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
+          <FormControl variant="standard" fullWidth>
+            <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
+            <Select
+              labelId="demo-simple-select-standard-label"
+              id="demo-simple-select-standard"
+              value={cityForm.status}
+              label="Status"
+              {...register('status')}
+              onChange={selectStatus}
+              error={errors.status ? true : false}
+            >
+              <MenuItem value="">
+                <em>None</em>
+              </MenuItem>
+              <MenuItem value={true}>Active</MenuItem>
+              <MenuItem value={false}>In Active</MenuItem>
+
+            </Select>
+          </FormControl>
+
+
+          <div>
+            <Typography variant="inherit" color="textSecondary">
+              {errors.status?.message}
+            </Typography>
+          </div>
+
+
         
-          label="Status"
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={true}>Active</MenuItem>
-          <MenuItem value={false}>In Active</MenuItem>
-        
-        </Select>
-        </FormControl>
 
 
 
@@ -156,11 +322,6 @@ export default function Tables() {
 
 
 
-
-
-
-
-      
         </DialogContent>
 
         <DialogActions>

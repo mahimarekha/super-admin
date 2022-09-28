@@ -9,11 +9,20 @@ import { useForm, Controller } from 'react-hook-form';
 // components
 import PageTitle from "../../../../components/PageTitle"
 import Widget from "../../../../components/Widget/Widget";
-import Table from "../../components/Table/Table";
+import {
+  Table,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+  Chip
+} from "@material-ui/core";
+// import Table from "../../components/Table/Table";
 import EditIcon from '@material-ui/icons/Edit';
+import { useContext, useEffect, useState } from 'react';
 // data
 import mock from "../../../dashboard/mock";
-
+import CategoryServices from "../../../../services/CategoryServices";
 const datatableData = [
   ["Joe James", "Example Inc.", "Yonkers", "NY"],
   ["John Walsh", "Example Inc.", "Hartford", "CT"],
@@ -41,7 +50,18 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function Tables() {
+  const tableHeaders = ['Icon','Name', 'Status'];
     const [age, setAge] = React.useState('');
+    const [categoryList, setCategoryList] = useState([]);
+
+    useEffect(() => {
+      getCategoryList();    
+      return () => {
+        setCategoryList([])
+      };
+    }, []);
+
+
     const handleChange = (event) => {
       setAge(event.target.value);
     };
@@ -71,7 +91,15 @@ export default function Tables() {
     setOpen(true);
     }
   
-  
+   const getCategoryList=()=>{
+    CategoryServices.getAllCategory().then((res) => {
+
+      setCategoryList(res);
+
+    }).catch((err) => {
+     // setError(err.message);
+    });
+  }
   const handleClose = () => {
     setOpen(false);
   };
@@ -104,7 +132,48 @@ export default function Tables() {
         
         <Grid item xs={12}>
           <Widget title="" upperTitle noBodyPadding bodyClass={classes.tableOverflow}>
-            <Table data={mock.table} onclick={onclick}/>
+
+            
+          <Table className="mb-0">
+      <TableHead>
+      <TableRow>
+                  {tableHeaders.map(key => (
+                    <TableCell key={key}>{key}</TableCell>
+                  ))}
+                </TableRow>
+      </TableHead>
+      <TableBody>
+
+
+{categoryList.map((category) => (
+  <TableRow key={category._id}>
+     <TableCell className="pl-3 fw-normal" >
+      <div>
+      <img
+        src={category.icon}
+        alt="car" style={{'height': '25px','width': '25px'}}
+      />
+        </div>
+  
+      </TableCell>  
+    <TableCell className="pl-3 fw-normal" >{category.parent}</TableCell>
+   
+    <TableCell>
+
+      {category.status ? 'Active' : 'In Active'}
+    </TableCell>
+    {/* <TableCell>
+      <EditIcon   onClick={() => editVendor(category._id)} >
+      
+      </EditIcon >
+    </TableCell> */}
+    {/* <TableCell>
+      <DeleteIcon onClick={() => deleteVendorRister(vendorRegistration)} />
+    </TableCell> */}
+  </TableRow>
+))}
+</TableBody>
+    </Table>
           </Widget>
         </Grid>
       </Grid>
