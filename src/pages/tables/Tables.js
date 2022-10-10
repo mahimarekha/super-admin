@@ -23,7 +23,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 
 export default function Tables() {
-  const tableHeaders = ['Name', 'Status', 'Edit','Delete'];
+  const tableHeaders = ['NAME', 'STATUS', 'EDIT','DELETE'];
   const [age, setAge] = React.useState('');
 
   const [data, setData] = useState({});
@@ -185,14 +185,15 @@ export default function Tables() {
 
   return (
     <>
-      <PageTitle title="City" button={<Button
-        variant="outlined" onClick={handleClickOpen}
+      <PageTitle title="City"  button={<Button 
+        variant="contained" onClick={handleClickOpen}
         size="medium"
         color="secondary"
 
       >
         Add City
-      </Button>} />
+      </Button>} 
+    />
 
       <Grid container spacing={4}>
 
@@ -222,10 +223,10 @@ export default function Tables() {
                       {city.status ? 'Active' : 'In Active'}
                     </TableCell>
                     <TableCell>
-                      <EditIcon onClick={() => handleClickOpen(city)} />
+                      <EditIcon style={{ cursor: 'pointer' }} onClick={() => handleClickOpen(city)} />
                     </TableCell>
                     <TableCell>
-                      <DeleteIcon onClick={() => deleteCity(city)} />
+                      <DeleteIcon style={{ cursor: 'pointer' }} onClick={() => deleteCity(city)} />
                     </TableCell>
                   </TableRow>
                 ))}

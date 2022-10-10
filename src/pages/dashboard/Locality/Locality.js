@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function Locality() {
-  const tableHeaders = ['Name', 'City Name', 'Status', 'Edit', 'Delete'];
+  const tableHeaders = ['NAME', 'CITY NAME', 'STATUS', 'EDIT', 'DELETE'];
   const [age, setAge] = React.useState('');
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -59,6 +59,7 @@ export default function Locality() {
   });
   const {
     register,
+    
     control,
     handleSubmit,
     formState: { errors }, reset
@@ -213,7 +214,7 @@ export default function Locality() {
   return (
     <>
       <PageTitle title="Area" button={<Button
-        variant="outlined" onClick={handleClickOpen}
+        variant="contained" onClick={handleClickOpen}
         size="medium"
         color="secondary"
 
@@ -246,10 +247,10 @@ export default function Locality() {
                       {locality.status ? 'Active' : 'In Active'}
                     </TableCell>
                     <TableCell>
-                      <EditIcon onClick={() => handleClickOpen(locality)} />
+                      <EditIcon style={{ cursor: 'pointer' }} onClick={() => handleClickOpen(locality)} />
                     </TableCell>
                     <TableCell>
-                      <DeleteIcon onClick={() => deleteLocality(locality)} />
+                      <DeleteIcon style={{ cursor: 'pointer' }} onClick={() => deleteLocality(locality)} />
                     </TableCell>
                   </TableRow>
                 ))}

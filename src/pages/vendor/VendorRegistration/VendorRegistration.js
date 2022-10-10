@@ -1,22 +1,12 @@
 import React from "react";
-import { useForm, Controller } from 'react-hook-form';
-import { Grid, Card, Box, FormControl, NativeSelect, CardActions, CardContent, Button, Typography, MenuItem, Select, InputLabel, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@material-ui/core";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import PageTitle from "../../../components/PageTitle";
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-import { useContext, useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
-import { useFormik } from 'formik';
-import {useLocation} from "react-router-dom";
 
+import {  useEffect, useState } from 'react';
 import RegistrationForm from "./RegisterForm";
 // import Widget from "../../../components/Widget";
 
 // import mock from "../../dashboard/mock";
 
-import CityServices from "../../../services/CityServices";
-import LocalityServices from "../../../services/LocalityServices";
+
 import VendorRegistrationServices from "../../../services/VendorRegistrationServices";
 import {
   useParams
@@ -34,6 +24,7 @@ export default function VendorRegistration(props) {
     geoLocation:'',
     cityId:'',
     localityId:'',
+    categoryId:[],
     gst:'',
     pan:'',
     accName:'',

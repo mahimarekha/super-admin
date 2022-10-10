@@ -1,11 +1,14 @@
 import React from "react";
-import { Grid,Button,Typography,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle ,TextField,FormControl,InputLabel,Select,MenuItem} from "@material-ui/core";
+import { Grid, Button, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import MUIDataTable from "mui-datatables";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
+import { useFormik } from 'formik';
 import { useForm, Controller } from 'react-hook-form';
+// import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 // components
 import PageTitle from "../../../../components/PageTitle"
 import Widget from "../../../../components/Widget/Widget";
@@ -17,31 +20,13 @@ import {
   TableCell,
   Chip
 } from "@material-ui/core";
-// import Table from "../../components/Table/Table";
+
 import EditIcon from '@material-ui/icons/Edit';
 import { useContext, useEffect, useState } from 'react';
 // data
 import mock from "../../../dashboard/mock";
 import CategoryServices from "../../../../services/CategoryServices";
-const datatableData = [
-  ["Joe James", "Example Inc.", "Yonkers", "NY"],
-  ["John Walsh", "Example Inc.", "Hartford", "CT"],
-  ["Bob Herm", "Example Inc.", "Tampa", "FL"],
-  ["James Houston", "Example Inc.", "Dallas", "TX"],
-  ["Prabhakar Linwood", "Example Inc.", "Hartford", "CT"],
-  ["Kaui Ignace", "Example Inc.", "Yonkers", "NY"],
-  ["Esperanza Susanne", "Example Inc.", "Hartford", "CT"],
-  ["Christian Birgitte", "Example Inc.", "Tampa", "FL"],
-  ["Meral Elias", "Example Inc.", "Hartford", "CT"],
-  ["Deep Pau", "Example Inc.", "Yonkers", "NY"],
-  ["Sebastiana Hani", "Example Inc.", "Dallas", "TX"],
-  ["Marciano Oihana", "Example Inc.", "Yonkers", "NY"],
-  ["Brigid Ankur", "Example Inc.", "Dallas", "TX"],
-  ["Anna Siranush", "Example Inc.", "Yonkers", "NY"],
-  ["Avram Sylva", "Example Inc.", "Hartford", "CT"],
-  ["Serafima Babatunde", "Example Inc.", "Tampa", "FL"],
-  ["Gaston Festus", "Example Inc.", "Tampa", "FL"],
-];
+
 
 const useStyles = makeStyles(theme => ({
   tableOverflow: {
@@ -49,179 +34,280 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function Tables() {
-  const tableHeaders = ['Icon','Name', 'Status'];
-    const [age, setAge] = React.useState('');
-    const [categoryList, setCategoryList] = useState([]);
+export default function Categories({ props }) {
+  const [age, setAge] = React.useState('');
+  const [categoryList, setCategoryList] = useState([]);
+  const [image, setImage] = useState('');
+  const [category, setCategory] = useState({
+    parent: '',
+    status: '',
+    icon: ''
+  });
 
-    useEffect(() => {
-      getCategoryList();    
-      return () => {
-        setCategoryList([])
-      };
-    }, []);
-
-
-    const handleChange = (event) => {
-      setAge(event.target.value);
+  const tableHeaders = ['ICON', 'NAME', 'STATUS', 'EDIT', 'DELETE'];
+  useEffect(() => {
+    getCategoryList();
+    return () => {
+      setCategoryList([])
     };
-    const validationSchema = Yup.object().shape({
-        categoryName: Yup.string().required('Category Name is required'),
-     
-    });
-    const {
-      register,
-      control,
-      handleSubmit,
-      formState: { errors },
-    } = useForm({
-      resolver: yupResolver(validationSchema),
-    });
-    const onSubmit = data => {
-      
-      console.log(JSON.stringify(data, null, 2));
-    };
+  }, []);  const validationSchema = Yup.object().shape({
+    parent: Yup.string().required('Category Name is required'),
+    icon: Yup.string(),
+    status: Yup.string().required('Status Name is required'),
+  });
+
+
+  const handleChange = (event) => {
+    setAge(event.target.value);
+  };
+
+
+  const onSubmit = data => {
+
+    console.log(JSON.stringify(data, null, 2));
+
+  };
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
+    setCategory({
+      parent: '',
+    status: '',
+    icon: ''
+    })
     setOpen(true);
   };
   const onclick = () => {
-   
+
     setOpen(true);
+  }
+  const deleteCategory = (categorydelete) => {
+
+    if (categorydelete) {
+      CategoryServices.deleteCategory(categorydelete).then((res) => {
+        getCategoryList();
+      }).catch((err) => {
+
+      });
     }
-  
-   const getCategoryList=()=>{
+
+  };
+  const getCategoryList = () => {
     CategoryServices.getAllCategory().then((res) => {
 
       setCategoryList(res);
 
     }).catch((err) => {
-     // setError(err.message);
+      // setError(err.message);
     });
   }
   const handleClose = () => {
     setOpen(false);
   };
-
+  const handleOpen = () => {
+    setOpen(true);
+  };
   const classes = useStyles();
+  const editCategory = (category) => {
+
+    setCategory(category)
+    handleOpen()
+  }
+
+  const imageUploaded = () => {
+
+  }
+  const handleChangeImage = (evt) => {
+    console.log("Uploading");
+
+    var reader = new FileReader();
+    var file = evt.target.files[0];
+
+    reader.onload = function (upload) {
+      console.log(upload.target.result)
+      setImage(upload.target.result)
+    };
+    reader.readAsDataURL(file);
+
+    console.log("Uploaded");
+  }
+  const formik = useFormik({
+    initialValues: category,
+    enableReinitialize: true,
+    validationSchema: validationSchema,
+    onSubmit: (values, { resetForm }) => {
+
+      if (category._id) {
+
+        values.id = category._id;
+        if (image && image != "") {
+          values.icon = image;
+        }else{
+          values.icon = category.icon;
+        }
+        CategoryServices.upadeCategory(values).then((res) => {
+          handleClose();
+          getCategoryList();
+          resetForm()
+        }).catch((err) => {
+
+        });
+      } else {
+        if (image) {
+          values.icon = image;
+        }
+        CategoryServices.creteCategory(values).then((res) => {
+          handleClose();
+          getCategoryList()
+          resetForm()
+        })
+          .catch((err) => {
+
+
+          })
+      }
+
+
+    },
+  })
+
   return (
     <>
-       <PageTitle title="Categories" button={<Button
-      variant="outlined" onClick={handleClose}
-      size="medium"
-      color="secondary"
-    
-    >
+
+      <PageTitle title="Categories" button={<Button
+        variant="contained" onClick={handleOpen}
+        size="medium"
+        color="secondary"
+
+      >
         Add Food Categories
-    </Button>} />
-  
+      </Button>} />
       <Grid container spacing={4}>
-
-        {/* <Grid item xs={12}>
-          <MUIDataTable
-            title="Employee List"
-            data={datatableData}
-            columns={["Name", "Company", "City", "State"]}
-            options={{
-              filterType: "checkbox",
-            }}
-          />
-        </Grid> */}
-
-        
         <Grid item xs={12}>
           <Widget title="" upperTitle noBodyPadding bodyClass={classes.tableOverflow}>
 
-            
-          <Table className="mb-0">
-      <TableHead>
-      <TableRow>
+
+            <Table className="mb-0">
+              <TableHead >
+                <TableRow>
                   {tableHeaders.map(key => (
                     <TableCell key={key}>{key}</TableCell>
                   ))}
                 </TableRow>
-      </TableHead>
-      <TableBody>
+
+              </TableHead>
+              <TableBody>
 
 
-{categoryList.map((category) => (
-  <TableRow key={category._id}>
-     <TableCell className="pl-3 fw-normal" >
-      <div>
-      <img
-        src={category.icon}
-        alt="car" style={{'height': '25px','width': '25px'}}
-      />
-        </div>
-  
-      </TableCell>  
-    <TableCell className="pl-3 fw-normal" >{category.parent}</TableCell>
-   
-    <TableCell>
+                {categoryList.map((category) => (
+                  <TableRow key={category._id}>
+                    <TableCell className="pl-3 fw-normal" >
+                      <div>
+                        <img
+                          src={category.icon}
+                          alt="car" style={{ 'height': '25px', 'width': '25px' }}
+                        />
+                      </div>
 
-      {category.status ? 'Active' : 'In Active'}
-    </TableCell>
-    {/* <TableCell>
+                    </TableCell>
+                    <TableCell className="pl-3 fw-normal" >{category.parent}</TableCell>
+
+                    <TableCell>
+
+                      {category.status ? 'Active' : 'In Active'}
+                    </TableCell>
+
+
+
+                    <TableCell>
+                      <EditIcon style={{ cursor: 'pointer' }} onClick={() => editCategory(category)} >
+
+                      </EditIcon >
+                    </TableCell>
+                    <TableCell>
+                      <DeleteIcon style={{ cursor: 'pointer' }} onClick={() => deleteCategory(category)} />
+                    </TableCell>
+                    {/* <TableCell>
       <EditIcon   onClick={() => editVendor(category._id)} >
       
       </EditIcon >
     </TableCell> */}
-    {/* <TableCell>
+                    {/* <TableCell>
       <DeleteIcon onClick={() => deleteVendorRister(vendorRegistration)} />
     </TableCell> */}
-  </TableRow>
-))}
-</TableBody>
-    </Table>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </Widget>
         </Grid>
       </Grid>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={handleClose} fullWidth={false}  maxWidth="sm">
         <DialogTitle>Add Categories</DialogTitle>
-        <DialogContent>
-          {/* <DialogContentText>
+
+        <form onSubmit={formik.handleSubmit} >
+          <DialogContent>
+            {/* <DialogContentText>
             To subscribe to this website, please enter your email address here. We
             will send updates occasionally.
           </DialogContentText> */}
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Category Name"
-            type="Category Name"
-            
-            variant="standard"
-            {...register('categoryName')}
-          error={errors.categoryName ? true : false}
-          />
-           <div>
-    <Typography variant="inherit" color="textSecondary">
-                {errors.categoryName?.message}
-              </Typography>
-              </div>
-          <FormControl  variant="standard" fullWidth>
-        <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
-        <Select
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
-        
-          label="Status"
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={true}>Active</MenuItem>
-          <MenuItem value={false}>In Active</MenuItem>
-        
-        </Select>
-        </FormControl>
-        </DialogContent>
 
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit(onSubmit)}>Add</Button>
-        </DialogActions>
+            <TextField
+            InputProps={{ style: { width: 370 } }}
+              autoFocus
+              margin="dense"
+              id="parent"
+              label="Category Name"
+              type="Category Name"
+              variant="standard"
+              value={formik.values.parent}
+              onChange={formik.handleChange}
+              error={formik.touched.parent && Boolean(formik.errors.parent)}
+              helperText={formik.touched.parent && formik.errors.parent}
+            />
+            <div style={{marginTop:16}} >
+              
+              <lable >Image Upload</lable> 
+              <div>
+              <input style={{marginTop:7}}
+                accept="image/*"
+                className={classes.input}
+                id="raised-button-file"
+                multiple
+                type="file"
+                onChange={handleChangeImage}
+              />
+              </div>
+
+            </div>
+            <FormControl variant="standard" fullWidth>
+              <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+
+                label="status"
+                name="status"
+                value={formik.values.status}
+                onChange={formik.handleChange}
+                error={formik.touched.status && Boolean(formik.errors.status)}
+                helperText={formik.touched.status && formik.errors.status}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={true}>Active</MenuItem>
+                <MenuItem value={false}>In Active</MenuItem>
+
+              </Select>
+            </FormControl>
+          </DialogContent>
+
+          <DialogActions>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button type="submit">Add</Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </>
   );

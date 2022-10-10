@@ -31,25 +31,6 @@ import mock from "../dashboard/mock";
 import CityServices from "../../services/CityServices";
 import LocalityServices from "../../services/LocalityServices";
 import VendorRegistrationServices from "../../services/VendorRegistrationServices";
-const datatableData = [
-  ["Joe James", "Example Inc.", "Yonkers", "NY"],
-  ["John Walsh", "Example Inc.", "Hartford", "CT"],
-  ["Bob Herm", "Example Inc.", "Tampa", "FL"],
-  ["James Houston", "Example Inc.", "Dallas", "TX"],
-  ["Prabhakar Linwood", "Example Inc.", "Hartford", "CT"],
-  ["Kaui Ignace", "Example Inc.", "Yonkers", "NY"],
-  ["Esperanza Susanne", "Example Inc.", "Hartford", "CT"],
-  ["Christian Birgitte", "Example Inc.", "Tampa", "FL"],
-  ["Meral Elias", "Example Inc.", "Hartford", "CT"],
-  ["Deep Pau", "Example Inc.", "Yonkers", "NY"],
-  ["Sebastiana Hani", "Example Inc.", "Dallas", "TX"],
-  ["Marciano Oihana", "Example Inc.", "Yonkers", "NY"],
-  ["Brigid Ankur", "Example Inc.", "Dallas", "TX"],
-  ["Anna Siranush", "Example Inc.", "Yonkers", "NY"],
-  ["Avram Sylva", "Example Inc.", "Hartford", "CT"],
-  ["Serafima Babatunde", "Example Inc.", "Tampa", "FL"],
-  ["Gaston Festus", "Example Inc.", "Tampa", "FL"],
-];
 
 const useStyles = makeStyles(theme => ({
   tableOverflow: {
@@ -58,7 +39,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function Vendor(props) {
-  const tableHeaders = ['Organization Name ','Full Name', 'Mobile Number', 'City Name','Status', 'Edit','Delete'];
+  const tableHeaders = ['ORGANIZATION NAME ','FULL NAME', 'MOBILE NUMBER', 'CITY NAME','STATUS', 'EDIT','DELETE'];
 
   const [open, setOpen] = React.useState(false);
   const [error, setError] = useState('');
@@ -174,12 +155,12 @@ export default function Vendor(props) {
       {vendorRegistration.status ? 'Active' : 'In Active'}
     </TableCell>
     <TableCell>
-      <EditIcon   onClick={() => editVendor(vendorRegistration._id)} >
+      <EditIcon style={{ cursor: 'pointer' }}  onClick={() => editVendor(vendorRegistration._id)} >
       
       </EditIcon >
     </TableCell>
     <TableCell>
-      <DeleteIcon onClick={() => deleteVendorRister(vendorRegistration)} />
+      <DeleteIcon style={{ cursor: 'pointer' }} onClick={() => deleteVendorRister(vendorRegistration)} />
     </TableCell>
   </TableRow>
 ))}
@@ -192,7 +173,7 @@ export default function Vendor(props) {
       <DialogTitle>New Vendor Redirect</DialogTitle>
         <DialogContent>
          
-
+hf
 
 
   </DialogContent>

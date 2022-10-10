@@ -1,5 +1,5 @@
 import React from "react";
-
+import CategoryServices from "../services/CategoryServices";
 var UserStateContext = React.createContext();
 var UserDispatchContext = React.createContext();
 
@@ -54,19 +54,24 @@ function loginUser(dispatch, login, password, history, setIsLoading, setError) {
   setIsLoading(true);
 
   if (!!login && !!password) {
-    setTimeout(() => {
-      localStorage.setItem('id_token', 1)
+   
+    const  userDetails =   {"registerEmail":login,"password":password}
+    CategoryServices.creteUserLogin(userDetails).then((res) => {
+     
+      localStorage.setItem('id_token', res.token)
       setError(null)
       setIsLoading(false)
+  
       dispatch({ type: 'LOGIN_SUCCESS' })
 
       history.push('/app/dashboard')
-    }, 2000);
-  } else {
-    dispatch({ type: "LOGIN_FAILURE" });
-    setError(true);
-    setIsLoading(false);
-  }
+    }).catch((err) => {
+      alert(err.response.data.message)
+  
+      setIsLoading(false);
+      history.push('/login')
+    });
+  } 
 }
 
 function signOut(dispatch, history) {

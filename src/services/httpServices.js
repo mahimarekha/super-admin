@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Cookies from 'js-cookie';
+
 console.log(process.env.NEXT_PUBLIC_API_BASE_URL)
 const instance = axios.create({
   baseURL: `http://localhost:5055/api`,
@@ -13,15 +13,15 @@ const instance = axios.create({
 // Add a request interceptor
 instance.interceptors.request.use(function (config) {
   // Do something before request is sent
-  let userInfo;
-  if (Cookies.get('userInfo')) {
-    userInfo = JSON.parse(Cookies.get('userInfo'));
+  let token;
+  if ( localStorage.getItem("id_token")) {
+    token =   localStorage.getItem("id_token");
   }
 
   return {
     ...config,
     headers: {
-      authorization: userInfo ? `Bearer ${userInfo.token}` : null,
+      authorization: token ? `Bearer ${token}` : null,
     },
   };
 });

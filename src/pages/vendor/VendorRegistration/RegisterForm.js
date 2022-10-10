@@ -1,29 +1,31 @@
 import React from "react";
 import { useForm, Controller } from 'react-hook-form';
-import { Grid, Card, Box, FormControl, NativeSelect, CardActions, CardContent, Button, Typography, MenuItem, Select, InputLabel, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@material-ui/core";
+import { Grid, Card, Box,Checkbox, FormControl, NativeSelect, CardActions, CardContent, Button, Typography, MenuItem, Select, InputLabel, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@material-ui/core";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import PageTitle from "../../../components/PageTitle";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
+import {ListItemText} from '@material-ui/core';
+import {OutlinedInput} from '@material-ui/core';
 import { useContext, useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
 import { useFormik } from 'formik';
-import {useLocation} from "react-router-dom";
+// import {useLocation} from "react-router-dom";
 // import Widget from "../../../components/Widget";
 
 // import mock from "../../dashboard/mock";
-
+import CategoryServices from "../../../services/CategoryServices";
 import CityServices from "../../../services/CityServices";
 import LocalityServices from "../../../services/LocalityServices";
 import VendorRegistrationServices from "../../../services/VendorRegistrationServices";
 import {
   useParams
 } from "react-router-dom";
-import { Update } from "@material-ui/icons";
+// import { Update } from "@material-ui/icons";
 export default function RegistrationForm({props,vendorData}) {
 
   const [age, setAge] = React.useState('');
   const [localityList, setLocalityList] = useState([]);
+  const[categoryList, setCategoryList]=useState([]);
   const [cityList, setCityList] = useState([]);
   const [error, setError] = useState('');
   const [vendor, setVendor] = useState(null);
@@ -34,6 +36,7 @@ export default function RegistrationForm({props,vendorData}) {
   const validationSchema = Yup.object().shape({
     orgName: Yup.string().required('Organization Name is required'),
     fullName: Yup.string().required('Full Name is required'),
+
     mobileNumber: Yup.string().required()
     .matches(/^[0-9]+$/, "Must be only digits")
     .min(10, 'Must be exactly 10 digits')
@@ -52,6 +55,7 @@ export default function RegistrationForm({props,vendorData}) {
       geoLocation: Yup.string().required('geoLocation is required'),
       cityId: Yup.string().required('city is required'),
       localityId: Yup.string().required('locality is required'),
+      categoryId: Yup.array(),
       gst: Yup.string().required('GST is required'),
       pan: Yup.string().required()
       .matches(/^[0-9a-zA-Z]+$/)
@@ -70,33 +74,52 @@ export default function RegistrationForm({props,vendorData}) {
       status:Yup.string().required('Status is required')
   });
   const { id } = useParams();
-
+  const ITEM_HEIGHT = 48;
+    const ITEM_PADDING_TOP = 8;
+    const MenuProps = {
+      PaperProps: {
+        style: {
+          maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+          width: 250,
+        },
+      },
+    };
   useEffect(() => {
     getCityList();   
    // getLocalityList();
-    
+   getCategoryList();
     if(id !== 'create'){
         getByjhnjbjhb();
     } 
-   
+  
+    
     return () => {
       setCityList([]);
       setLocalityList([]);
      
     };
   }, []);
-  // const {
-  //   register,
-  //   control,
-  //   handleSubmit,
-  //   formState: { errors },
-  // } = useForm({
-  //   resolver: yupResolver(validationSchema),
-  // });
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
   const onSubmit = data => {
     
     console.log(JSON.stringify(data, null, 2));
   };
+  const getCategoryList = () => {
+    CategoryServices.getAllCategory().then((res) => {
+
+      setCategoryList(res);
+
+    }).catch((err) => {
+      // setError(err.message);
+    });
+  }
   const getCityList = () => {
     CityServices.getAllCity().then((res) => {
       setCityList(res);
@@ -136,7 +159,13 @@ getLocalityList({target:{value:res.cityId}});
 
 
   
+const selectedCate =(selected)=>{
 
+const cateSelected = selected.map(res=>categoryList.find(catList=>catList._id === res));
+
+return cateSelected.map(result=>result.parent)
+
+}
 
   const formik = useFormik({
     initialValues: vendorData,
@@ -310,9 +339,9 @@ getLocalityList({target:{value:res.cityId}});
               </Grid>
 
               <Grid item xs={6}>
-              <div style={{ width: 370, marginTop: '18px' }}>
+              <div style={{ width: 370 }}>
                   <FormControl variant="standard" fullWidth="true" >
-                    <InputLabel id="demo-simple-select-standard-label">City</InputLabel>
+                    <InputLabel id="demo-simple-select-standard-label">City Name</InputLabel>
                     <Select
                       labelId="demo-simple-select-standard-label"
                       id="cityId"
@@ -365,6 +394,43 @@ getLocalityList({target:{value:res.cityId}});
                 </div>
                
               </Grid>
+
+              <Grid item xs={6}>
+                <div style={{ width: 370, marginTop: '18px' }}>
+
+                  <FormControl variant="standard" fullWidth="true" >
+                    <InputLabel id="demo-simple-select-standard-label">Category</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-standard-label"
+                      id="categoryId"
+                      multiple
+                      name="categoryId"
+                    
+                     renderValue={(selected) => selectedCate(selected).join(", ")}
+                     MenuProps ={MenuProps }
+                      label="Category"
+                      
+                      value={formik.values.categoryId}
+                      onChange={formik.handleChange}
+                      error={formik.touched.categoryId && Boolean(formik.errors.categoryId)}
+                      helperText={formik.touched.categoryId && formik.errors.categoryId}
+                    >
+                      <MenuItem value="">
+                        <em>None</em>
+                      </MenuItem>
+
+                      {categoryList.map(({ _id, parent }) => (
+                  <MenuItem key={_id} value={_id}>
+                   {/* <Checkbox checked={formik.values.categoryId.indexOf(parent) > -1} /> */}
+                   {parent}
+              </MenuItem>
+                  ))}
+                    </Select>
+                  </FormControl>
+                </div>
+               
+              </Grid>
+
               <Grid item xs={6}>
                 <TextField InputProps={{ style: { width: 370 } }}
                   autoFocus
@@ -400,8 +466,8 @@ getLocalityList({target:{value:res.cityId}});
               <Grid item xs={12} style={{ marginTop: '30px' }}>
 
                 <Grid item xs={12}>
-                  <sapn style={{ fontSize: '17px', color: 'rgb(83 109 254)' }}>Bank Account Detailes:
-                  </sapn>
+                  <span style={{ fontSize: '17px', color: 'rgb(83 109 254)' }}>Bank Account Detailes:
+                  </span>
                 </Grid>
               </Grid>
 
@@ -485,14 +551,8 @@ getLocalityList({target:{value:res.cityId}});
                
               </Grid>
 
-
-
-
-
-
-
               <Grid item xs={6}>
-              <FormControl variant="standard" fullWidth="true"  style={{ width: 370, marginTop: '18px' }}>
+              <FormControl variant="standard" fullWidth="true"  style={{ width: 370}}>
               <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
               <Select
                 labelId="demo-simple-select-standard-label"

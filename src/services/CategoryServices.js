@@ -13,6 +13,10 @@ const CategoryServices = {
   creteCategory(body){
     return requests.post('/category/add',body); 
   },
+  //post method for login
+  creteUserLogin(body){
+    return requests.post('/user/login',body); 
+  },
   deleteCategory(body){
     return requests.delete(`/category/${body._id}`); 
   }
