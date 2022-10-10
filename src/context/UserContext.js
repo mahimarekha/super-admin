@@ -57,7 +57,8 @@ function loginUser(dispatch, login, password, history, setIsLoading, setError) {
    
     const  userDetails =   {"registerEmail":login,"password":password}
     CategoryServices.creteUserLogin(userDetails).then((res) => {
-     
+      localStorage.setItem('userDetail', JSON.stringify(res));
+
       localStorage.setItem('id_token', res.token)
       setError(null)
       setIsLoading(false)
