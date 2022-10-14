@@ -7,7 +7,7 @@ import {
   TableCell
 } from "@material-ui/core";
 import { useForm, Controller } from 'react-hook-form';
-
+import { withStyles } from '@material-ui/core/styles';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useContext, useEffect, useState } from 'react';
@@ -20,10 +20,32 @@ import EditIcon from '@material-ui/icons/Edit';
 
 import CityServices from "../../services/CityServices";
 import DeleteIcon from '@material-ui/icons/Delete';
+import { makeStyles } from "@material-ui/styles";
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: "#536dfe",
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
 
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}))(TableRow);
 
+const useStyles = makeStyles({
+  table: {
+    minWidth: 700,
+  },
+});
 export default function Tables() {
-  const tableHeaders = ['NAME', 'STATUS', 'EDIT','DELETE'];
+  const tableHeaders = ['Name', 'Status', 'Edit','Delete'];
   const [age, setAge] = React.useState('');
 
   const [data, setData] = useState({});
@@ -207,7 +229,7 @@ export default function Tables() {
               <TableHead>
                 <TableRow>
                   {tableHeaders.map(key => (
-                    <TableCell key={key}>{key}</TableCell>
+                    <StyledTableCell key={key}>{key}</StyledTableCell>
                   ))}
                 </TableRow>
               </TableHead>

@@ -2,6 +2,8 @@ import React from "react";
 import { useForm, Controller } from 'react-hook-form';
 import { Grid, Button, Dialog, Checkbox, Typography, FormControlLabel, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
+import { withStyles } from '@material-ui/core/styles';
+
 import MUIDataTable from "mui-datatables";
 import ProductServices from "../../../../services/productServices";
 import CategoryServices from "../../../../services/CategoryServices";
@@ -34,6 +36,25 @@ const useStyles = makeStyles(theme => ({
     overflow: 'auto'
   }
 }))
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: "#536dfe",
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+    
+  },
+}))(TableRow);
+
 
 export default function Menu() {
 
@@ -237,7 +258,7 @@ export default function Menu() {
               <TableHead >
                 <TableRow>
                   {tableHeaders.map(key => (
-                    <TableCell key={key}>{key}</TableCell>
+                    <StyledTableCell key={key}>{key}</StyledTableCell>
                   ))}
                 </TableRow>
 

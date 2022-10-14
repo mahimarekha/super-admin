@@ -25,12 +25,31 @@ import { useContext, useEffect, useState } from 'react';
 import PageTitle from "../../components/PageTitle";
 import Widget from "../../components/Widget";
 //import Table from "../dashboard/components/Table/Table";
+import { withStyles } from '@material-ui/core/styles';
 
 // data
 import mock from "../dashboard/mock";
 import CityServices from "../../services/CityServices";
 import LocalityServices from "../../services/LocalityServices";
 import VendorRegistrationServices from "../../services/VendorRegistrationServices";
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: "#536dfe",
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}))(TableRow);
+
 
 const useStyles = makeStyles(theme => ({
   tableOverflow: {
@@ -39,7 +58,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function Vendor(props) {
-  const tableHeaders = ['ORGANIZATION NAME ','FULL NAME', 'MOBILE NUMBER', 'CITY NAME','STATUS', 'EDIT','DELETE'];
+  const tableHeaders = ['Orgnization Name ','Full Name', 'Mobile Number', 'City Name','Status', 'Edit','Delete'];
 
   const [open, setOpen] = React.useState(false);
   const [error, setError] = useState('');
@@ -137,7 +156,7 @@ export default function Vendor(props) {
       <TableHead>
       <TableRow>
                   {tableHeaders.map(key => (
-                    <TableCell key={key}>{key}</TableCell>
+                    <StyledTableCell key={key}>{key}</StyledTableCell>
                   ))}
                 </TableRow>
       </TableHead>

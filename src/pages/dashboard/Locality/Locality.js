@@ -9,10 +9,10 @@ import * as Yup from 'yup';
 import {
   Table,
   TableRow,
-  TableHead,
+  TableHead,TableContainer,
   TableBody,
   TableCell,
-  Chip
+  Chip,
 } from "@material-ui/core";
 import LocalityServices from "../../../services/LocalityServices";
 import { useContext, useEffect, useState } from 'react';
@@ -22,20 +22,42 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import PageTitle from "../../../components/PageTitle/PageTitle";
 import Widget from "../../../components/Widget/Widget";
 // import Table from "../../tables/Tables";
+import { withStyles } from '@material-ui/core/styles';
 
 // // data
 import mock from "../../dashboard/mock";
 
 import CityServices from "../../../services/CityServices";
-const useStyles = makeStyles(theme => ({
-  tableOverflow: {
-    overflow: 'auto'
-  }
-}))
 
+
+
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: "#536dfe",
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}))(TableRow);
+
+const useStyles = makeStyles({
+  table: {
+    minWidth: 700,
+  },
+});
 
 export default function Locality() {
-  const tableHeaders = ['NAME', 'CITY NAME', 'STATUS', 'EDIT', 'DELETE'];
+  
+  const tableHeaders = ['Name', 'City Name', 'Status', 'Edit', 'Delete'];
   const [age, setAge] = React.useState('');
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -231,7 +253,7 @@ export default function Locality() {
               <TableHead>
                 <TableRow>
                   {tableHeaders.map(key => (
-                    <TableCell key={key}>{key}</TableCell>
+                    <StyledTableCell key={key}>{key}</StyledTableCell>
                   ))}
                 </TableRow>
               </TableHead>

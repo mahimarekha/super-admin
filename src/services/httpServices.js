@@ -2,7 +2,7 @@ import axios from 'axios';
 
 console.log(process.env.NEXT_PUBLIC_API_BASE_URL)
 const instance = axios.create({
-  baseURL: `http://localhost:5055/api`,
+  baseURL: `http://foodorder.srshta.com/api`,
   timeout: 500000,
   headers: {
     Accept: 'application/json',

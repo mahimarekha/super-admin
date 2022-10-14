@@ -1,6 +1,8 @@
 import React from "react";
 import { Grid, Button, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
+import { withStyles } from '@material-ui/core/styles';
+
 import MUIDataTable from "mui-datatables";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -27,7 +29,23 @@ import { useContext, useEffect, useState } from 'react';
 import mock from "../../../dashboard/mock";
 import CategoryServices from "../../../../services/CategoryServices";
 
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: "#536dfe",
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
 
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}))(TableRow);
 const useStyles = makeStyles(theme => ({
   tableOverflow: {
     overflow: 'auto'
@@ -44,7 +62,7 @@ export default function Categories({ props }) {
     icon: ''
   });
 
-  const tableHeaders = ['ICON', 'NAME', 'STATUS', 'EDIT', 'DELETE'];
+  const tableHeaders = ['Icon', 'Name', 'Status', 'Edit', 'Delete'];
   useEffect(() => {
     getCategoryList();
     return () => {
@@ -191,7 +209,7 @@ export default function Categories({ props }) {
               <TableHead >
                 <TableRow>
                   {tableHeaders.map(key => (
-                    <TableCell key={key}>{key}</TableCell>
+                    <StyledTableCell key={key}>{key}</StyledTableCell>
                   ))}
                 </TableRow>
 
