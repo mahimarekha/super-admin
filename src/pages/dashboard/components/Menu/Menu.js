@@ -51,13 +51,14 @@ const StyledTableRow = withStyles((theme) => ({
     '&:nth-of-type(odd)': {
       backgroundColor: theme.palette.action.hover,
     },
-    
+
   },
 }))(TableRow);
 
 
 export default function Menu() {
-
+  const [formValues, setFormValues] = useState({ quantity: "", amount: "" ,isDefaultPrice: "" })
+  const [itemPriceDetails, setItemPriceDetails] = useState([]);
   const [image, setImage] = useState('');
   const [categoryList, setCategoryList] = useState([]);
   const [productList, setProductList] = useState([]);
@@ -69,6 +70,7 @@ export default function Menu() {
     price: '',
     discount: '',
     quantity: '',
+    unit: '',
     description: '',
     status: '',
     icon: ''
@@ -86,22 +88,82 @@ export default function Menu() {
   const validationSchema = Yup.object().shape({
     categoryId: Yup.string().required('category Name is required'),
     title: Yup.string().required('Menu Name is required'),
-    
+
     originalPrice: Yup.string().required()
-    .matches(/^[0-9]+$/, "Must be only digits"),
+      .matches(/^[0-9]+$/, "Must be only digits"),
     price: Yup.string().required()
-    .matches(/^[0-9]+$/, "Must be only digits"),
+      .matches(/^[0-9]+$/, "Must be only digits"),
     discount: Yup.string().required()
-    .matches(/^[0-9]+$/, "Must be only digits"),
+      .matches(/^[0-9]+$/, "Must be only digits"),
     quantity: Yup.string().required()
-    .matches(/^[0-9]+$/, "Must be only digits"),
+      .matches(/^[0-9]+$/, "Must be only digits"),
+    unit: Yup.string().required(),
+
     description: Yup.string().required('Description is required'),
     status: Yup.string().required('status is required'),
   });
- 
-  const handleChange = (event) => {
-    setAge(event.target.value);
+
+  const handleChange = (event,type) => {
+
+   
+      let itemDetails= formValues;
+      if(type === 'quantity'){
+         itemDetails = {...itemDetails,...{quantity:event.target.value}};
+
+      }else if(type === 'isDefaultPrice'){
+        itemDetails = {...itemDetails,...{isDefaultPrice:event.target.checked}};
+
+      }else{
+        itemDetails = {...itemDetails,...{amount:event.target.value}};
+      }
+      
+   // const itemDetails = {quantity:event.target.value,amount:event.target.value}
+   
+     setFormValues(itemDetails);
+    // setAge(event.target.value);
   };
+
+  let addFormFields = () => {
+    
+
+
+    const itemList =itemPriceDetails;
+    if(formValues.itemIndex || formValues.itemIndex === 0){
+      itemList[formValues.itemIndex]={quantity:formValues.quantity,amount:formValues.amount,isDefaultPrice:formValues.isDefaultPrice};
+     
+    }else{
+      itemList.push(formValues);
+    }
+    
+    if(formValues.isDefaultPrice){
+      const productDetails = {...formik.values,...{originalPrice: formValues.amount,
+      price: formValues.amount,
+      discount: 0,
+      unit: formValues.quantity}};
+    setProduct(productDetails);
+    }
+    setItemPriceDetails(itemList);
+    setFormValues({quantity:'',amount:'',isDefaultPrice:false});
+   
+  }
+
+let editFormFields =(product, index)=>{
+product.itemIndex = index;
+setFormValues(product);
+}
+
+
+  let removeFormFields = (i) => {
+    let newFormValues = [...itemPriceDetails];
+    newFormValues.splice(i, 1);
+    
+    setItemPriceDetails(newFormValues)
+  }
+  let handleSubmit = (event) => {
+    event.preventDefault();
+    alert(JSON.stringify(formValues));
+  }
+
   const onSubmit = data => {
 
     console.log(JSON.stringify(data, null, 2));
@@ -116,6 +178,7 @@ export default function Menu() {
       price: '',
       discount: '',
       quantity: '',
+      unit: '',
       description: '',
       status: '',
       icon: ''
@@ -129,7 +192,7 @@ export default function Menu() {
 
   const getCategoryList = () => {
     CategoryServices.getAllCategory().then((res) => {
-      
+
       setCategoryList(res);
 
     }).catch((err) => {
@@ -139,7 +202,7 @@ export default function Menu() {
   const getProductList = () => {
     ProductServices.getAllProduct().then((res) => {
 
-      setProductList(res.products);
+      setProductList(res.finalProductList);
 
     }).catch((err) => {
       // setError(err.message);
@@ -166,6 +229,7 @@ export default function Menu() {
   const classes = useStyles();
   const editProduct = (product) => {
     product.categoryId = product.categoryId ? product.categoryId._id : '';
+    setItemPriceDetails(product.pricing)
     setProduct(product)
     handleOpen()
   }
@@ -182,7 +246,7 @@ export default function Menu() {
     };
     reader.readAsDataURL(file);
     console.log("Uploaded");
-    
+
   }
 
 
@@ -203,22 +267,28 @@ export default function Menu() {
 
         } else {
           values.image = product.image;
+
         }
+        values.pricing= itemPriceDetails;
         ProductServices.upadeProduct(values).then((res) => {
           handleClose();
           getProductList();
-          resetForm()
+          resetForm();
+          setItemPriceDetails([]);
         }).catch((err) => {
 
         });
       } else {
         if (image) {
           values.image = image;
+
         }
+        values.pricing= itemPriceDetails;
         ProductServices.creteProduct(values).then((res) => {
           handleClose();
           getProductList()
-          resetForm()
+          resetForm();
+          setItemPriceDetails([]);
         })
           .catch((err) => {
 
@@ -227,20 +297,6 @@ export default function Menu() {
     }
   })
 
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
   return (
     <>
       <PageTitle title="Menu" button={<Button
@@ -248,7 +304,7 @@ export default function Menu() {
         size="medium"
         color="secondary" > Add Food Menu
       </Button>} />
-     
+
       <Grid container spacing={4}>
 
         <Grid item xs={12}>
@@ -306,48 +362,42 @@ export default function Menu() {
           </Widget>
         </Grid>
       </Grid>
-      <Dialog  open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Add Menu</DialogTitle>
         <form onSubmit={formik.handleSubmit} >
-          <DialogContent style={{maxWidth: 436}}>
-            {/* <DialogContentText>
-            To subscribe to this website, please enter your email address here. We
-            will send updates occasionally.
-          </DialogContentText> */}
-<div style={{width:370}}>
-            <FormControl variant="standard" fullWidth="true" >
-              
-              <InputLabel id="demo-simple-select-standard-label">Category</InputLabel>
-              <Select
-                labelId="demo-simple-select-standard-label"
-                id="categoryId"
+          <DialogContent style={{ maxWidth: 436 }}>
+            <div style={{ width: 370 }}>
+              <FormControl variant="standard" fullWidth="true" >
 
-                name="categoryId"
+                <InputLabel id="demo-simple-select-standard-label">Category</InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="categoryId"
 
-                label="Category"
+                  name="categoryId"
 
-                value={formik.values.categoryId}
-                onChange={formik.handleChange}
-                error={formik.touched.categoryId && Boolean(formik.errors.categoryId)}
-                helperText={formik.touched.categoryId && formik.errors.categoryId}
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
+                  label="Category"
 
-                {categoryList.map(({ _id, parent }) => (
-                  <MenuItem key={_id} value={_id}>{parent}
-                    {/* <Checkbox checked={formik.values.categoryId.indexOf(parent) > -1} /> */}
-
+                  value={formik.values.categoryId}
+                  onChange={formik.handleChange}
+                  error={formik.touched.categoryId && Boolean(formik.errors.categoryId)}
+                  helperText={formik.touched.categoryId && formik.errors.categoryId}
+                >
+                  <MenuItem value="">
+                    <em>None</em>
                   </MenuItem>
-                ))}
-              </Select>
-             
-            </FormControl>
-            </div>
 
-            <TextField
-              InputProps={{ style: { width: 370 } }}
+                  {categoryList.map(({ _id, parent }) => (
+                    <MenuItem key={_id} value={_id}>{parent}
+                      {/* <Checkbox checked={formik.values.categoryId.indexOf(parent) > -1} /> */}
+
+                    </MenuItem>
+                  ))}
+                </Select>
+
+              </FormControl>
+            </div>
+            <TextField  InputProps={{ style: { width: 370 } }}
               onChange={formik.handleChange}
               margin="dense"
               id="title"
@@ -359,24 +409,21 @@ export default function Menu() {
               error={formik.touched.title && Boolean(formik.errors.title)}
               helperText={formik.touched.title && formik.errors.title}
             />
-            <div style={{marginTop:16}} >
-              <lable>Image Upload</lable> 
+            <div style={{ marginTop: 16 }} >
+              <lable>Image Upload</lable>
               <div>
-              <input style={{marginTop:7}}
-                accept="image/*"
-                className={classes.input}
-                id="raised-button-file"
-                multiple
-                type="file"
-                onChange={handleChangeImage}
-              />
-</div>
+                <input style={{ marginTop: 7 }}
+                  accept="image/*"
+                  className={classes.input}
+                  id="raised-button-file"
+                  multiple
+                  type="file"
+                  onChange={handleChangeImage}
+                />
+              </div>
             </div>
-
-
-            <TextField
-              InputProps={{ style: { width: 370 } }}
-              
+            <TextField InputProps={{ style: { width: 370 } }}
+              disabled={true}
               margin="dense"
               name="originalPrice"
               id="originalPrice"
@@ -388,10 +435,8 @@ export default function Menu() {
               error={formik.touched.originalPrice && Boolean(formik.errors.originalPrice)}
               helperText={formik.touched.originalPrice && formik.errors.originalPrice}
             />
-
-            <TextField
-              InputProps={{ style: { width: 370 } }}
-              
+            <TextField InputProps={{ style: { width: 370 } }}
+              disabled={true}
               margin="dense"
               id="price"
               name="price"
@@ -403,10 +448,8 @@ export default function Menu() {
               error={formik.touched.price && Boolean(formik.errors.price)}
               helperText={formik.touched.price && formik.errors.price}
             />
-
-            <TextField
-              InputProps={{ style: { width: 370 } }}
-              
+            <TextField InputProps={{ style: { width: 370 } }}
+              disabled={false}
               margin="dense"
               id="discount"
               name="discount"
@@ -418,9 +461,8 @@ export default function Menu() {
               error={formik.touched.discount && Boolean(formik.errors.discount)}
               helperText={formik.touched.discount && formik.errors.discount}
             />
-            <TextField
-              InputProps={{ style: { width: 370 } }}
-              
+            <TextField InputProps={{ style: { width: 370 } }}
+
               margin="dense"
               id="quantity "
               name="quantity"
@@ -432,9 +474,23 @@ export default function Menu() {
               error={formik.touched.quantity && Boolean(formik.errors.quantity)}
               helperText={formik.touched.quantity && formik.errors.quantity}
             />
+         
+            <TextField InputProps={{ style: { width: 370 } }}
+              disabled={true}
+              margin="dense"
+              id="unit "
+              name="unit"
+              label="Unit"
+              type="text"
+              variant="standard"
+              value={formik.values.unit}
+              onChange={formik.handleChange}
+              error={formik.touched.unit && Boolean(formik.errors.unit)}
+              helperText={formik.touched.unit && formik.errors.unit}
+            />
             <TextField
               InputProps={{ style: { width: 370 } }}
-              
+
               margin="dense"
               name="description"
               id="description"
@@ -445,31 +501,131 @@ export default function Menu() {
               onChange={formik.handleChange}
               error={formik.touched.description && Boolean(formik.errors.description)}
               helperText={formik.touched.description && formik.errors.description}
-
             />
-       
-       <div style={{width:370}}>
-            <FormControl variant="standard" fullWidth>
-              <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
-              <Select
-                labelId="demo-simple-select-standard-label"
-                id="status"
 
-                label="status"
-                name="status"
-                value={formik.values.status}
-                onChange={formik.handleChange}
-                error={formik.touched.status && Boolean(formik.errors.status)}
-                helperText={formik.touched.status && formik.errors.status}
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={true}>Active</MenuItem>
-                <MenuItem value={false}>In Active</MenuItem>
+             
+            {/* </form> */}
 
-              </Select>
-            </FormControl>
+            <div style={{ width: 370 }}>
+              <FormControl variant="standard" fullWidth>
+                <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="status"
+
+                  label="status"
+                  name="status"
+                  value={formik.values.status}
+                  onChange={formik.handleChange}
+                  error={formik.touched.status && Boolean(formik.errors.status)}
+                  helperText={formik.touched.status && formik.errors.status}
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value={true}>Active</MenuItem>
+                  <MenuItem value={false}>In Active</MenuItem>
+
+                </Select>
+              </FormControl>
+              <div className="form-inline" >
+
+
+                  <Grid container spacing={4}>
+                    <Grid item xs={3}>
+                      <TextField
+                        InputProps={{  }}
+
+                        margin="dense"
+                        id="unit "
+                        name="unit"
+                        label="Unit"
+                        type="text"
+                        variant="standard"
+                         value={formValues.quantity}
+                        onChange={e=>{handleChange(e,'quantity')}}
+
+                      />
+                    </Grid>
+                    <Grid item xs={3}>
+                      <TextField
+                        InputProps={{  }}
+                        margin="dense"
+                        id="amount "
+                        name="amount"
+                        label="Amount"
+                        type="text"
+                        variant="standard"
+                       value={formValues.amount}
+                        onChange={e=>{handleChange(e,'amount')}}
+
+                      />
+                    </Grid>
+                    <Grid item xs={3} style={{paddingTop: "38 px"}}>
+
+                    <FormControlLabel control={<Checkbox   checked={formValues.isDefaultPrice}
+                            onChange={e=>{handleChange(e,'isDefaultPrice')}}  />} label=" Default" />
+                    </Grid>
+                    <Grid item xs={3} style={{paddingTop: "29px"}}>
+
+                    <Button style={{ backgroundColor: 'rgb(255, 92, 147)', color: 'white' }} type="button" onClick={() => addFormFields()}>Add</Button>
+
+
+                    
+                    {/* <Button style={{ backgroundColor: 'rgb(255, 92, 147)', color: 'white', marginLeft:"29px" }} type="button"  >Remove</Button>  */}
+                    </Grid>
+                   
+
+                  </Grid>
+                 
+                 
+                  <div className="button-section">
+                {/* <button className="button add" type="button" onClick={() => addFormFields()}>Add</button> */}
+                {/* <button className="button submit" type="submit">Submit</button> */}
+              </div>
+                 
+                  
+                </div>
+
+            {/* <form onSubmit={handleSubmit}> */}
+              {/* {formValues.map((element, index) => (
+                
+              ))} */}
+             <Table className="mb-0">
+              <TableHead >
+                <TableRow>
+                  
+                    <TableCell >Unit</TableCell>
+                    <TableCell >Amount</TableCell>
+                    <TableCell  >Default</TableCell>
+                    <TableCell >Edit </TableCell>
+                    <TableCell > Delete</TableCell>
+                </TableRow>
+
+              </TableHead>
+              <TableBody>
+
+              {itemPriceDetails.map((product, i) => (
+                  <TableRow key={product._id}>
+                    
+                    <TableCell className="pl-3 fw-normal" >{product.quantity}</TableCell>
+                    <TableCell className="pl-3 fw-normal" >{product.amount}</TableCell>
+                    
+                    <TableCell className="pl-3 fw-normal" >{product.isDefaultPrice ? 'Yes' : 'No'}</TableCell>
+
+                    <TableCell>
+                      <EditIcon style={{ cursor: 'pointer' }} onClick={() => editFormFields(product, i)} >
+
+                      </EditIcon >
+                    </TableCell>
+                    <TableCell>
+                      <DeleteIcon style={{ cursor: 'pointer' }} onClick={() => removeFormFields(i)} />
+                    </TableCell>
+                
+                  </TableRow>
+              ))}
+              </TableBody>
+            </Table>
             </div>
           </DialogContent>
 

@@ -1,14 +1,12 @@
 import React from "react";
-import { useForm, Controller } from 'react-hook-form';
-import { Grid, Card, Box,Checkbox, FormControl, NativeSelect, CardActions, CardContent, Button, Typography, MenuItem, Select, InputLabel, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@material-ui/core";
-import InputAdornment from "@material-ui/core/InputAdornment";
+import { useForm } from 'react-hook-form';
+import { Grid, Card, Box, FormControl, Button, MenuItem, Select, InputLabel, TextField } from "@material-ui/core";
 import PageTitle from "../../../components/PageTitle";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import {ListItemText} from '@material-ui/core';
-import {OutlinedInput} from '@material-ui/core';
-import { useContext, useEffect, useState } from 'react';
+import {  useEffect, useState } from 'react';
 import { useFormik } from 'formik';
+// import Autocomplete from "react-google-autocomplete";
 // import {useLocation} from "react-router-dom";
 // import Widget from "../../../components/Widget";
 
@@ -26,9 +24,11 @@ export default function RegistrationForm({props,vendorData}) {
   const [age, setAge] = React.useState('');
   const [localityList, setLocalityList] = useState([]);
   const[categoryList, setCategoryList]=useState([]);
+  
   const [cityList, setCityList] = useState([]);
   const [error, setError] = useState('');
   const [vendor, setVendor] = useState(null);
+  
   
   const handleChange = (event) => {
     setAge(event.target.value);
@@ -321,22 +321,21 @@ return cateSelected.map(result=>result.parent)
                
               </Grid>
 
-              <Grid item xs={6}>
-                <TextField InputProps={{ style: { width: 370 } }}
-                  autoFocus
-                  margin="dense"
-                  id="geoLocation"
-                  name="geoLocation"
-                  label="Geo Location "
-                  type="Geo Location "
-                  variant="standard"
-                  value={formik.values.geoLocation}
-                  onChange={formik.handleChange}
-                  error={formik.touched.geoLocation && Boolean(formik.errors.geoLocation)}
-                  helperText={formik.touched.geoLocation && formik.errors.geoLocation}
-                />
+              {/* <Grid item xs={6}>
+              <Autocomplete
+  apiKey={YOUR_GOOGLE_MAPS_API_KEY}
+  onPlaceSelected={(place) => {
+    console.log(place);
+  }}
+/>;
+
+
+
+
+
+             
               
-              </Grid>
+              </Grid> */}
 
               <Grid item xs={6}>
               <div style={{ width: 370 }}>

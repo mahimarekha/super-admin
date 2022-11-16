@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Button, Typography, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
+import { Grid, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { withStyles } from '@material-ui/core/styles';
 
@@ -68,7 +68,8 @@ export default function Categories({ props }) {
     return () => {
       setCategoryList([])
     };
-  }, []);  const validationSchema = Yup.object().shape({
+  }, []); 
+   const validationSchema = Yup.object().shape({
     parent: Yup.string().required('Category Name is required'),
     icon: Yup.string(),
     status: Yup.string().required('Status Name is required'),
@@ -226,6 +227,7 @@ export default function Categories({ props }) {
                           alt="car" style={{ 'height': '25px', 'width': '25px' }}
                         />
                       </div>
+
 
                     </TableCell>
                     <TableCell className="pl-3 fw-normal" >{category.parent}</TableCell>

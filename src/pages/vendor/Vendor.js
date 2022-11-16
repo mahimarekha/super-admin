@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid,Button,MenuItem,Select,InputLabel,Dialog,DialogActions,DialogContent,DialogContentText,DialogTitle ,TextField} from "@material-ui/core";
+import { Grid,Button,Dialog,DialogActions,DialogContent,DialogTitle } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import MUIDataTable from "mui-datatables";
 import {
@@ -123,30 +123,14 @@ export default function Vendor(props) {
        
     
     
-     <PageTitle title="Vendor registration" button={<Link to="/app/vendorregistration/create" 
-      variant="outlined" 
-      size="medium"
-      color="secondary"
-    
-    >
-        Vendor Registration
-    </Link>} />
+     <PageTitle title="Vendor Detailes" />
 
 
 
   
       <Grid container spacing={4}>
 
-        {/* <Grid item xs={12}>
-          <MUIDataTable
-            title="Employee List"
-            data={datatableData}
-            columns={["Name", "Company", "City", "State"]}
-            options={{
-              filterType: "checkbox",
-            }}
-          />
-        </Grid> */}
+    
 
         
         <Grid item xs={12}>
@@ -191,9 +175,6 @@ export default function Vendor(props) {
       <Dialog fullWidth="md" open={open} onClose={handleClose}>
       <DialogTitle>New Vendor Redirect</DialogTitle>
         <DialogContent>
-         
-hf
-
 
   </DialogContent>
   <DialogActions>

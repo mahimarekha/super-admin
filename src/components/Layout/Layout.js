@@ -13,7 +13,8 @@ import VendorRegistration from "../../pages/vendor/VendorRegistration";
 import Locality from "../../pages/dashboard/Locality/Locality";
 import Categories from "../../pages/dashboard/components/Categories/Categories";
 import Menu from "../../pages/dashboard/components/Menu/Menu"
-
+import VendorList from "../../pages/dashboard/components/VendorList/VendorList"
+import OrderDetailes from "../../pages/dashboard/components/OrderDetailes/OrderDetailes"
 //icons
 import {
   mdiFacebook as FacebookIcon,
@@ -70,6 +71,8 @@ function Layout(props) {
               <Route path="/app/locality" component={Locality} />
               <Route path="/app/categories" component={Categories} />
               <Route path="/app/menu" component={Menu} />
+              <Route path="/app/listvendor" component={VendorList} />
+              <Route path="/app/orderdetailes" component={OrderDetailes} />
               <Route
                 exact
                 path="/app/ui"

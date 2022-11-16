@@ -70,6 +70,7 @@ export default function Locality() {
     cityName: '',
     area: '',
     status: '',
+    geo:'',
 
   });
 
@@ -77,11 +78,10 @@ export default function Locality() {
     cityName: Yup.string().required('City Name is required'),
     area: Yup.string().required('Area is required'),
     status: Yup.string().required('status is required'),
-
+    geo: Yup.string().required('Geo Location is required'),
   });
   const {
     register,
-    
     control,
     handleSubmit,
     formState: { errors }, reset
@@ -104,7 +104,8 @@ export default function Locality() {
         cityName: res[0]._id,
         area: '',
         status: '',
-        id: ''
+        id: '',
+        geo:'',
       })
       setCityList(res);
 
@@ -129,6 +130,7 @@ export default function Locality() {
       cityId: data.cityName,
       area: data.area,
       status: data.status,
+      geo:data.geo
     }
 
     if (areaForm.id) {
@@ -175,7 +177,8 @@ export default function Locality() {
         cityName: locality.cityId._id,
         area: locality.area,
         status: locality.status,
-        id: locality._id
+        id: locality._id,
+        geo:locality.geo
       })
     } else {
       formReset();
@@ -191,7 +194,8 @@ export default function Locality() {
       cityName: event.target.value,
       area: areaForm.area,
       status: areaForm.status,
-      id: areaForm.id
+      id: areaForm.id,
+      geo:areaForm.geo
     }
     setAreaForm(areaSelectData)
 
@@ -203,7 +207,8 @@ export default function Locality() {
       cityName: areaForm.cityName,
       area: areaForm.area,
       status: event.target.value,
-      id: areaForm.id
+      id: areaForm.id,
+      geo:areaForm.geo
     }
     setAreaForm(areaSelectData)
 
@@ -215,7 +220,21 @@ export default function Locality() {
       cityName: areaForm.cityName,
       area: event.target.value,
       status: areaForm.status,
-      id: areaForm.id
+      id: areaForm.id,
+      geo:areaForm.geo
+    }
+    setAreaForm(areaSelectData)
+
+  }
+
+  const geoLocation = (event) => {
+
+    const areaSelectData = {
+      cityName: areaForm.cityName,
+      area: areaForm.area,
+      status: areaForm.status,
+      id: areaForm.id,
+      geo:event.target.value
     }
     setAreaForm(areaSelectData)
 
@@ -226,7 +245,8 @@ export default function Locality() {
       cityName: '',
       area: '',
       status: '',
-      id: ''
+      id: '',
+      geo:'',
     }
     setAreaForm(areaSelectData)
   }
@@ -346,6 +366,31 @@ export default function Locality() {
                 {errors.area?.message}
               </Typography>
             </div>
+
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Geo Location"
+              type="text"
+              fullWidth
+
+              value={areaForm.geo}
+
+              variant="standard"
+              {...register('geo')}
+
+              error={errors.geo ? true : false}
+              onChange={geoLocation}
+            />
+            <div>
+              <Typography variant="inherit" color="textSecondary">
+                {errors.geo?.message}
+              </Typography>
+            </div>
+
+
+
             <FormControl variant="standard" fullWidth="true" >
               <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
               <Select

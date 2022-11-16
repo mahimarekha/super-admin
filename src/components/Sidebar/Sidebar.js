@@ -36,7 +36,7 @@ const structure = [
   { id: 1, label: "City", link: "/app/tables", icon: <TypographyIcon /> },
   {
     id: 3,
-    label: "Vendor registration",
+    label: "Vendors ",
     link: "/app/vendor",
     icon: <NotificationsIcon />,
   },
@@ -58,6 +58,19 @@ const structure = [
     link: "/app/menu",
     icon: <TableIcon />,
   },
+  {
+    id: 7,
+    label: "  Vendors search",
+    link: "/app/listvendor",
+    icon: <TableIcon />,
+  },
+  {
+    id: 7,
+    label: "  Order Details",
+    link: "/app/orderdetailes",
+    icon: <TableIcon />,
+  },
+
   // {
   //   id: 4,
   //   label: "UI Elements",
