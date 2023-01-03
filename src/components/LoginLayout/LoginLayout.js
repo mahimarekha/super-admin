@@ -5,11 +5,8 @@ import {
   Redirect,
   withRouter,
 } from "react-router-dom";
+import Layout from "../Layout/Layout"
 import classnames from "classnames";
-import StudentRegistration from "../../pages/dashboard/StudentForm"
-import AddClass from "../../pages/dashboard/AddClass";
-import Teacher from "../../pages/dashboard/Teacher";
-import Activity from "../../pages/dashboard/Activity"
 import {Box, IconButton, Link} from '@material-ui/core'
 import Icon from '@mdi/react'
 // import Vendor from "../../pages/vendor";
@@ -39,14 +36,19 @@ import Dashboard from "../../pages/dashboard/SchoolRegistration";
 import Typography from "../../pages/typography";
 import Notifications from "../../pages/notifications";
 import Maps from "../../pages/maps";
+// import Tables from "../../pages/tables";
+
 import Icons from "../../pages/icons";
 import Charts from "../../pages/charts";
+
 // context
 import { useLayoutState } from "../../context/LayoutContext";
 import { Category } from "@material-ui/icons";
-import SchooRegistration from "../../pages/dashboard/SchoolRegistration";
-import ActivityService from "../../pages/dashboard/Locality/Service/activityService";
-function Layout(props) {
+import Login from "../../pages/login/Login";
+import LoginHeader from "../LoginHeader/LoginHeader";
+import SchoolRegistration from "../../pages/dashboard/SchoolRegistration";
+
+function LoginLayout(props) {
   var classes = useStyles();
 
   // global
@@ -55,8 +57,8 @@ function Layout(props) {
   return (
     <div className={classes.root}>
         <>
-          <Header history={props.history} />
-          <Sidebar />
+        <LoginHeader history={props.history} />
+          
           <div
             className={classnames(classes.content, {
               [classes.contentShift]: layoutState.isSidebarOpened,
@@ -64,28 +66,16 @@ function Layout(props) {
           >
             <div className={classes.fakeToolbar} />
             <Switch>
-              <Route path="/app/studentregistration" component={StudentRegistration} />
-              <Route path="/app/addclass" component={AddClass} />
-              <Route path="/app/teacher" component={Teacher} />
-              <Route path="/app/activity" component={Activity} />
-              <Route path="/app/typography" component={Typography} />
-              <Route path="/app/notifications" component={Notifications} />
-              {/* <Route path="/app/vendor" component={Vendor} />
-              <Route path="/app/vendorregistration/:id" component={VendorRegistration} />
-              <Route path="/app/locality" component={Locality} />
-              <Route path="/app/categories" component={Categories} />
-              <Route path="/app/menu" component={Menu} />
-              <Route path="/app/listvendor" component={VendorList} />
-              <Route path="/app/orderdetailes" component={OrderDetailes} />
-              <Route path="/app/discountcoupon" component={DicountCoupon} /> */}
-              <Route
+             
+               <Route
                 exact
-                path="/app/ui"
-                render={() => <Redirect to="/app/ui/icons" />}
-              />
-              <Route path="/app/ui/maps" component={Maps} />
-              <Route path="/app/ui/icons" component={Icons} />
-              <Route path="/app/ui/charts" component={Charts} />
+                path="/"
+                render={() => <Redirect to="/montessori/schoolregistration" />}
+              />  
+              <Route path="/montessori/schoolregistration" component={SchoolRegistration} />
+              <Route path="/montessori/login" component={Login} />
+
+              <Route path="/montessori/dashboard" component={Layout} />
             </Switch>
             <Box
               mt={5}
@@ -168,4 +158,4 @@ function Layout(props) {
   );
 }
 
-export default withRouter(Layout);
+export default withRouter(LoginLayout);

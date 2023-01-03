@@ -52,10 +52,10 @@ export { UserProvider, useUserState, useUserDispatch, loginUser, signOut };
 function loginUser(dispatch, login, password, history, setIsLoading, setError) {
   setError(false);
   setIsLoading(true);
-
+ 
   if (!!login && !!password) {
    
-    const  userDetails =   {"registerEmail":login,"password":password}
+    const  userDetails =   {"email":login,"password":password}
     CategoryServices.creteUserLogin(userDetails).then((res) => {
       localStorage.setItem('userDetail', JSON.stringify(res));
 
@@ -65,12 +65,12 @@ function loginUser(dispatch, login, password, history, setIsLoading, setError) {
   
       dispatch({ type: 'LOGIN_SUCCESS' })
 
-      history.push('/app/dashboard')
+      history.push('/app/studentregistration') 
     }).catch((err) => {
       alert(err.response.data.message)
   
       setIsLoading(false);
-      history.push('/login')
+      history.push('/montessori/login')
     });
   } 
 }
@@ -78,5 +78,5 @@ function loginUser(dispatch, login, password, history, setIsLoading, setError) {
 function signOut(dispatch, history) {
   localStorage.removeItem("id_token");
   dispatch({ type: "SIGN_OUT_SUCCESS" });
-  history.push("/login");
+  history.push("/montessori/login");
 }

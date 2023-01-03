@@ -1,12 +1,14 @@
 import React from "react";
 import { useForm, Controller } from 'react-hook-form';
-import { Grid, Button, Dialog, Checkbox, Typography, FormControlLabel, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
+import { Grid, Button, Dialog, Checkbox, Typography,FormLabel, FormControlLabel, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { withStyles } from '@material-ui/core/styles';
-
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
 import MUIDataTable from "mui-datatables";
 import ProductServices from "../../../../services/productServices";
 import CategoryServices from "../../../../services/CategoryServices";
+import httpServices from '../../../../services/httpServices';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 // components
@@ -67,6 +69,7 @@ export default function Menu() {
     categoryId: '',
     title: '',
     originalPrice: '',
+    selectType:'',
     price: '',
     discount: '',
     quantity: '',
@@ -88,7 +91,7 @@ export default function Menu() {
   const validationSchema = Yup.object().shape({
     categoryId: Yup.string().required('category Name is required'),
     title: Yup.string().required('Menu Name is required'),
-
+    selectType:Yup.string().required('Select Type is required'),
     originalPrice: Yup.string().required()
       .matches(/^[0-9]+$/, "Must be only digits"),
     price: Yup.string().required()
@@ -122,11 +125,7 @@ export default function Menu() {
      setFormValues(itemDetails);
     // setAge(event.target.value);
   };
-
   let addFormFields = () => {
-    
-
-
     const itemList =itemPriceDetails;
     if(formValues.itemIndex || formValues.itemIndex === 0){
       itemList[formValues.itemIndex]={quantity:formValues.quantity,amount:formValues.amount,isDefaultPrice:formValues.isDefaultPrice};
@@ -134,7 +133,6 @@ export default function Menu() {
     }else{
       itemList.push(formValues);
     }
-    
     if(formValues.isDefaultPrice){
       const productDetails = {...formik.values,...{originalPrice: formValues.amount,
       price: formValues.amount,
@@ -144,15 +142,11 @@ export default function Menu() {
     }
     setItemPriceDetails(itemList);
     setFormValues({quantity:'',amount:'',isDefaultPrice:false});
-   
   }
-
 let editFormFields =(product, index)=>{
 product.itemIndex = index;
 setFormValues(product);
 }
-
-
   let removeFormFields = (i) => {
     let newFormValues = [...itemPriceDetails];
     newFormValues.splice(i, 1);
@@ -163,7 +157,6 @@ setFormValues(product);
     event.preventDefault();
     alert(JSON.stringify(formValues));
   }
-
   const onSubmit = data => {
 
     console.log(JSON.stringify(data, null, 2));
@@ -175,14 +168,17 @@ setFormValues(product);
       categoryId: '',
       title: '',
       originalPrice: '',
+      selectType:'',
       price: '',
       discount: '',
       quantity: '',
       unit: '',
       description: '',
       status: '',
-      icon: ''
+      icon: '',
+     
     })
+    setItemPriceDetails([]);
     setOpen(true);
   };
   const onclick = () => {
@@ -240,11 +236,28 @@ setFormValues(product);
     var reader = new FileReader();
     var file = evt.target.files[0];
 
-    reader.onload = function (upload) {
-      console.log(upload.target.result)
-      setImage(upload.target.result)
-    };
-    reader.readAsDataURL(file);
+
+   
+  
+
+
+    
+    let data = new FormData();
+    data.append('image', file);
+    CategoryServices.uploadImage(data).then((res) => {
+      const url = httpServices.baseURL()
+      const image =res.filename
+      const final =`${url}/image/download/${image}`
+      setImage(final)
+     
+    })
+
+    // reader.onload = function (upload) {
+    //   console.log(upload.target.result)
+    //   setImage(upload.target.result)
+    // };
+    // reader.readAsDataURL(file);
+
     console.log("Uploaded");
 
   }
@@ -255,7 +268,6 @@ setFormValues(product);
     enableReinitialize: true,
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
-
       if (product._id) {
 
         values.id = product._id;
@@ -304,6 +316,7 @@ setFormValues(product);
         size="medium"
         color="secondary" > Add Food Menu
       </Button>} />
+
 
       <Grid container spacing={4}>
 
@@ -422,6 +435,34 @@ setFormValues(product);
                 />
               </div>
             </div>
+
+
+            &nbsp;
+
+
+
+
+
+
+
+
+         
+
+            
+
+            <div>
+      <FormLabel id="demo-radio-buttons-group-label">Select Type</FormLabel>
+      <RadioGroup aria-labelledby="demo-radio-buttons-group-label"  id="selectType"  value={formik.values.selectType}
+       onChange={formik.handleChange}
+      
+      
+               >
+        <FormControlLabel   name="selectType" value="Veg" control={<Radio />} label="Veg" />
+        <FormControlLabel  name="selectType" value="Non Veg" control={<Radio />} label="Non Veg" />
+        <FormControlLabel   name="selectType" value="Both" control={<Radio />} label="Both" />
+      </RadioGroup>
+      </div>
+
             <TextField InputProps={{ style: { width: 370 } }}
               disabled={true}
               margin="dense"

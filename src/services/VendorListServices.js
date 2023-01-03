@@ -7,7 +7,6 @@ const VendorListServices = {
   getOrderById(id){
     return requests.get(`/orders/${id}`);
   },
-  
   getAllVendorList() {
     return requests.get('/vendorlist');
   },
@@ -36,6 +35,8 @@ const VendorListServices = {
   getVendorOrderById(orderId){
     return requests.get('/orders/vendororder/'+orderId); 
   },
+
+
 };
 
 export default VendorListServices;

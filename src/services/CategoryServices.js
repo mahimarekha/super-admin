@@ -15,11 +15,16 @@ const CategoryServices = {
   },
   //post method for login
   creteUserLogin(body){
-    return requests.post('/user/login',body); 
+    
+    return requests.post('/registration/login',body); 
   },
   deleteCategory(body){
     return requests.delete(`/category/${body._id}`); 
-  }
+  },
+
+  uploadImage(body){
+    return requests.post('/image/upload',body); 
+  },
 };
 
 export default CategoryServices;

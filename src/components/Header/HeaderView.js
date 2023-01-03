@@ -78,8 +78,8 @@ const notifications = [
   }
 ];
 
-const Header = ({ classes, isSidebarOpened, toggleSidebar, ...props }) => (
-  <AppBar position="fixed" className={classes.appBar}>
+const HeaderView = ({ classes, isSidebarOpened, toggleSidebar, ...props }) => (
+  <AppBar position="fixed" className={classes.appBar}  >
     <Toolbar className={classes.toolbar}>
       <IconButton
         color="inherit"
@@ -453,4 +453,4 @@ const styles = theme => ({
   }
 });
 
-export default withStyles(styles)(Header);
+export default withStyles(styles)(HeaderView);

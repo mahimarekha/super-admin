@@ -2,7 +2,7 @@ import React from "react";
 import { Grid, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControl, InputLabel, Select, MenuItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import { withStyles } from '@material-ui/core/styles';
-
+import httpServices from '../../../../services/httpServices';
 import MUIDataTable from "mui-datatables";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -142,11 +142,24 @@ export default function Categories({ props }) {
     var reader = new FileReader();
     var file = evt.target.files[0];
 
-    reader.onload = function (upload) {
-      console.log(upload.target.result)
-      setImage(upload.target.result)
-    };
-    reader.readAsDataURL(file);
+
+
+    let data = new FormData();
+    data.append('image', file);
+    CategoryServices.uploadImage(data).then((res) => {
+      const url = httpServices.baseURL()
+      const image =res.filename
+      const final =`${url}/image/download/${image}`
+      setImage(final)
+     
+    })
+
+
+    // reader.onload = function (upload) {
+    //   console.log(upload.target.result)
+    //   setImage(upload.target.result)
+    // };
+    // reader.readAsDataURL(file);
 
     console.log("Uploaded");
   }

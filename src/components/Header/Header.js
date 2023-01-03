@@ -11,12 +11,11 @@ import {
 } from "@material-ui/core";
 import {
   Menu as MenuIcon,
-  MailOutline as MailIcon,
-  NotificationsNone as NotificationsIcon,
   Person as AccountIcon,
   Search as SearchIcon,
   Send as SendIcon,
   ArrowBack as ArrowBackIcon,
+  BuildTwoTone,
 } from "@material-ui/icons";
 import classNames from "classnames";
 
@@ -24,7 +23,7 @@ import classNames from "classnames";
 import useStyles from "./styles";
 
 // components
-import { Badge, Typography, Button } from "../Wrappers";
+import {  Typography, Button } from "../Wrappers";
 import Notification from "../Notification/Notification";
 import UserAvatar from "../UserAvatar/UserAvatar";
 
@@ -106,9 +105,11 @@ export default function Header(props) {
   var [isSearchOpen, setSearchOpen] = useState(false);
   const userDetails = JSON.parse(localStorage.getItem("userDetail"));
   
+
+  // style={{ backgroundColor: 'rgb(255, 92, 147)', color: 'white' }}
   return (
-    <AppBar position="fixed" className={classes.appBar}>
-      <Toolbar className={classes.toolbar}>
+    <AppBar position="fixed" className={classes.appBar} style={{backgroundColor : '#30875b'}}>
+      <Toolbar className={classes.toolbar} >
         <IconButton
           color="inherit"
           onClick={() => toggleSidebar(layoutDispatch)}
@@ -137,16 +138,23 @@ export default function Header(props) {
             />
           )}
         </IconButton>
-        <Typography variant="h6" weight="medium" className={classes.logotype}>
-         Cloud Kitchen
+        <Typography variant="h6" weight="medium" className={classes.logotype} style={{ fontSize:"calc(2.142rem)", fontWeight:"600"}}>
+        Montessori Campass
         </Typography>
+       
         <div className={classes.grow} />
+
+
+      
+
+        
         {/* <Button component={Link} href="https://flatlogic.com/templates/react-material-admin-full" variant={"outlined"} color={"secondary"} className={classes.purchaseBtn}>Unlock full version</Button> */}
         <div
           className={classNames(classes.search, {
             [classes.searchFocused]: isSearchOpen,
           })}
         >
+           
           <div
             className={classNames(classes.searchIcon, {
               [classes.searchIconOpened]: isSearchOpen,
@@ -155,6 +163,9 @@ export default function Header(props) {
           >
             <SearchIcon classes={{ root: classes.headerIcon }} />
           </div>
+
+          
+
           <InputBase
             placeholder="Search…"
             classes={{
@@ -173,12 +184,7 @@ export default function Header(props) {
           }}
           className={classes.headerMenuButton}
         >
-          <Badge
-            badgeContent={isNotificationsUnread ? notifications.length : null}
-            color="warning"
-          >
-            <NotificationsIcon classes={{ root: classes.headerIcon }} />
-          </Badge>
+         
         </IconButton>
         <IconButton
           color="inherit"
@@ -190,12 +196,7 @@ export default function Header(props) {
           }}
           className={classes.headerMenuButton}
         >
-          <Badge
-            badgeContent={isMailsUnread ? messages.length : null}
-            color="secondary"
-          >
-            <MailIcon classes={{ root: classes.headerIcon }} />
-          </Badge>
+         
         </IconButton>
         <IconButton
           aria-haspopup="true"

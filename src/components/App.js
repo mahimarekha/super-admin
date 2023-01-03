@@ -10,6 +10,8 @@ import Login from "../pages/login";
 
 // context
 import { useUserState } from "../context/UserContext";
+import SchoolRegistration from "../pages/dashboard/SchoolRegistration";
+import LoginLayout from "./LoginLayout/LoginLayout";
 
 export default function App() {
   // global
@@ -18,14 +20,15 @@ export default function App() {
   return (
     <HashRouter>
       <Switch>
-        <Route exact path="/" render={() => <Redirect to="/app/dashboard" />} />
-        <Route
+        <Route exact path="/" render={() => <Redirect to="/app" />} />
+        {/* <Route
           exact
           path="/app"
           render={() => <Redirect to="/app/dashboard" />}
-        />
+        /> */}
         <PrivateRoute path="/app" component={Layout} />
-        <PublicRoute path="/login" component={Login} />
+        {/* <PublicRoute path="/login" component={Login} /> */}
+        <PublicRoute path="/montessori" component={LoginLayout} />
         <Route component={Error} />
       </Switch>
     </HashRouter>
@@ -43,7 +46,7 @@ export default function App() {
           ) : (
             <Redirect
               to={{
-                pathname: "/login",
+                pathname: "/montessori/login",
                 state: {
                   from: props.location,
                 },

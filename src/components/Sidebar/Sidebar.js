@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Drawer, IconButton, List } from "@material-ui/core";
+
 import {
-  Home as HomeIcon,
+ 
   NotificationsNone as NotificationsIcon,
   FormatSize as TypographyIcon,
 
@@ -31,45 +32,51 @@ import {
 } from "../../context/LayoutContext";
 
 const structure = [
-  { id: 0, label: "Dashboard", link: "/app/dashboard", icon: <HomeIcon /> },
+  { id: 0, label: "Student Registration", link: "/app/studentregistration", icon: <TypographyIcon /> },
   
-  { id: 1, label: "City", link: "/app/tables", icon: <TypographyIcon /> },
+  { id: 1, label: "Add Class", link: "/app/addclass", icon: <TableIcon /> },
   {
     id: 3,
-    label: "Vendors ",
-    link: "/app/vendor",
-    icon: <NotificationsIcon />,
-  },
-  {
-    id: 4,
-    label: "Locality",
-    link: "/app/locality",
-    icon: <ArrowBackIcon />,
-  },
-  {
-    id: 5,
-    label: "Categories",
-    link: "/app/categories",
+    label: "Teacher",
+    link: "/app/teacher",
     icon: <UIElementsIcon />,
   },
   {
-    id: 6,
-    label: "Menu",
-    link: "/app/menu",
-    icon: <TableIcon />,
+    id: 4,
+    label: "Activity",
+    link: "/app/activity",
+    icon: <ArrowBackIcon />,
   },
-  {
-    id: 7,
-    label: "  Vendors search",
-    link: "/app/listvendor",
-    icon: <TableIcon />,
-  },
-  {
-    id: 7,
-    label: "  Order Details",
-    link: "/app/orderdetailes",
-    icon: <TableIcon />,
-  },
+  // {
+  //   id: 5,
+  //   label: "Categories",
+  //   link: "/app/categories",
+  //   icon: <UIElementsIcon />,
+  // },
+  // {
+  //   id: 6,
+  //   label: "Menu",
+  //   link: "/app/menu",
+  //   icon: <TableIcon />,
+  // },
+  // {
+  //   id: 7,
+  //   label: "  Vendors search",
+  //   link: "/app/listvendor",
+  //   icon: <TableIcon />,
+  // },
+  // {
+  //   id: 7,
+  //   label: "  Order Details",
+  //   link: "/app/orderdetailes",
+  //   icon: <TableIcon />,
+  // },
+  // {
+  //   id: 7,
+  //   label: "  Discount Coupon",
+  //   link: "/app/discountcoupon",
+  //   icon: <TableIcon />,
+  // },
 
   // {
   //   id: 4,

@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
 }))
 export default function VendorList() {
     const tableHeaders = ['Menu Item', 'Quantity', 'Price', 'Client'];
-    const tableVendorHeaders = ['Invoice', 'User Name', 'Clint', 'Total', 'Delivery Date'];
+    const tableVendorHeaders = ['Invoice', 'User Name', 'Client', 'Total', 'Delivery Date', 'Delivery Status'];
     const [ordersList, setOrdersList] = useState([]);
     const [cityList, setCityList] = useState([]);
     const [isDisable, setButtonDiable] = useState("true");
@@ -80,7 +80,8 @@ export default function VendorList() {
         const orderDetailsJSON = {
             id:orderId,
             cart:orderDetails.cart,
-            isOrderAssign:true
+            isOrderAssign:true, 
+            status:"Processing" , 
         }
         VendorListServices.upadeOrderDetails(orderDetailsJSON).then((res) => {
            console.log('order details updated')
@@ -123,7 +124,8 @@ export default function VendorList() {
                     return sum + tax.itemTotal;
                 }, 0);
 
-
+            const taxAmount = totalAmount/100*5;
+            const finalAmount = totalAmount + taxAmount;
                 const orderDetails = {
                     ...orderById, ...{
                         vendorId: key,
@@ -132,7 +134,9 @@ export default function VendorList() {
                         status: 'Pending',
                         subTotal: totalAmount,
                         shippingCost: 0,
-                        total: totalAmount,
+                        total: finalAmount,
+                        tax:taxAmount,
+                        discount : 0,
                         orderInvoice: `${orderById.invoice}-CL${count}`
                     }
                 };
@@ -183,6 +187,7 @@ export default function VendorList() {
         const vendorDetails = tempOrderById.cart[index].vendorDetails.find(vendor => {
             return vendor._id === event.target.value;
         })
+        debugger
         tempOrderById.cart[index].selectedVendorId = vendorDetails._id;
         tempOrderById.cart[index].selectedVendor = {
             id: vendorDetails._id, orgName: vendorDetails.orgName,
@@ -380,6 +385,9 @@ export default function VendorList() {
 
                                     <TableCell className="pl-3 fw-normal" >
                                         {vendorOrderDetails.orderId.deliveryDate}
+                                    </TableCell>
+                                    <TableCell className="pl-3 fw-normal" >
+                                        {vendorOrderDetails.status}
                                     </TableCell>
                                 </TableRow>
                             ))}

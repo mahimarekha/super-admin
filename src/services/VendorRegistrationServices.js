@@ -1,9 +1,16 @@
 import requests from './httpServices';
 
 const VendorRegistrationServices = {
+
+
+
+
   getAllVendorRegistration() {
     return requests.get('/vendor');
   },
+
+
+  
   getByIdVendorRegistration(id) {
     return requests.get(`/vendor/${id}` );
   },

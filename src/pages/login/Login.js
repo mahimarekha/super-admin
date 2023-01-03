@@ -8,7 +8,9 @@ import {
   Tab,
   TextField,
   Fade,
+
 } from "@material-ui/core";
+import { loginUser } from "../../context/UserContext";
 import { withRouter } from "react-router-dom";
 import classnames from "classnames";
 
@@ -20,7 +22,8 @@ import logo from "./logo.svg";
 import google from "../../images/google.svg";
 
 // context
-import { useUserDispatch, loginUser } from "../../context/UserContext";
+import { useUserDispatch, lofginUser } from "../../context/UserContext";
+import PageTitle from "../../components/PageTitle/PageTitle";
 
 function Login(props) {
   var classes = useStyles();
@@ -35,21 +38,28 @@ function Login(props) {
   var [nameValue, setNameValue] = useState("");
   var [loginValue, setLoginValue] = useState("");
   var [passwordValue, setPasswordValue] = useState("");
+  
 
   return (
     <Grid container className={classes.container}>
-      <div className={classes.logotypeContainer}>
-        <img src={logo} alt="logo" className={classes.logotypeImage} />
-        <Typography className={classes.logotypeText}>Cloud Kitchen</Typography>
+      <div className={classes.logotypeContainer} >
+        <img src="https://img.freepik.com/premium-photo/hands-student-boy-using-wooden-material-montessori-school_47726-6358.jpg?w=2000"
+         alt="logo" className={classes.logotypeImage} style={{ width: '820px',  height: '1000px'}}/>
+        {/* <Typography className={classes.logotypeText}> School Montessori </Typography> */}
       </div>
       <div className={classes.formContainer}>
         <div className={classes.form}>
+
+         <h2 style={{fontFamily: 'unset',color: '#0fb880', fontSize: '20px', fontWeight: 'revert',   
+       
+        }}>Welcome To School Montessori </h2>
           <Tabs
             value={activeTabId}
             onChange={(e, id) => setActiveTabId(id)}
             indicatorColor="primary"
             textColor="primary"
             centered
+
           >
             <Tab label="Login" classes={{ root: classes.tab }} />
             
